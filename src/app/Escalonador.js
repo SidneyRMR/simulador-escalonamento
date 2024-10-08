@@ -15,6 +15,14 @@ const Escalonador = () => {
     setTempoAtual(0);
   };
 
+  const restaurarProcessosOriginais = () => {
+    setProcessos(processosIniciais.map(p => ({
+      ...p,
+      tempoRestante: p.tempoExecucao, // Reseta o tempoRestante
+      finalizado: false // Marca todos como não finalizados
+    })));
+  };
+
   const criarProcessosAleatorios = () => {
     limparGrafico();
     const numProcessos = Math.floor(Math.random() * 6) + 3; // Entre 3 e 8 processos
@@ -41,7 +49,7 @@ const Escalonador = () => {
     limparGrafico();
     setEmExecucao(true);
 
-    const fila = processosIniciais.map(p => ({ ...p })); // Cópia dos processos
+    const fila = processos.map(p => ({ ...p })); // Cópia dos processos
     let tempoCorrente = 0;
 
     const intervalo = setInterval(() => {
@@ -51,6 +59,7 @@ const Escalonador = () => {
         if (fila.every(p => p.finalizado)) {
           clearInterval(intervalo);
           setEmExecucao(false);
+          restaurarProcessosOriginais(); // Reseta os processos
           return;
         }
         tempoCorrente++;
@@ -84,7 +93,7 @@ const Escalonador = () => {
     limparGrafico();
     setEmExecucao(true);
 
-    const fila = processosIniciais.map(p => ({ ...p })); // Cópia dos processos
+    const fila = processos.map(p => ({ ...p })); // Cópia dos processos
     let tempoCorrente = 0;
 
     const intervalo = setInterval(() => {
@@ -96,6 +105,7 @@ const Escalonador = () => {
         if (fila.every(p => p.finalizado)) {
           clearInterval(intervalo);
           setEmExecucao(false);
+          restaurarProcessosOriginais(); // Reseta os processos
           return;
         }
         tempoCorrente++;

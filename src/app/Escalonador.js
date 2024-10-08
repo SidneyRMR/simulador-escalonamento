@@ -26,12 +26,12 @@ const Escalonador = () => {
 
   const criarProcessosAleatorios = () => {
     limparGrafico();
-    const numProcessos = Math.floor(Math.random() * 6) + 3; // Entre 3 e 8 processos
+    const numProcessos = Math.floor(Math.random() * 4) + 3; // Entre 3 e 6 processos
     const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
       id: index + 1,
-      tempoExecucao: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      tempoExecucao: Math.floor(Math.random() * 8) + 1, // Entre 1 e 8
       tempoRestante: 0,
-      tempoChegada: Math.floor(Math.random() * 10) + 1,
+      tempoChegada: Math.floor(Math.random() * 8) + 1,
       finalizado: false
     }));
 

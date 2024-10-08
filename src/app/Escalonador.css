@@ -136,6 +136,7 @@ body {
   
   .time-scale {
     position: absolute;
+    left: 120px;
     bottom: 0;
     width: 100%;
     display: flex;

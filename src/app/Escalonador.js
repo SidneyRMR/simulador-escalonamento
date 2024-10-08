@@ -9,6 +9,7 @@ const Escalonador = () => {
   const [emExecucao, setEmExecucao] = useState(false);
   const [ganttChart, setGanttChart] = useState([]);
   const [processosIniciais, setProcessosIniciais] = useState([]);
+  const [mensagens, setMensagens] = useState([]);
 
   const limparGrafico = () => {
     setGanttChart([]);
@@ -54,11 +55,13 @@ const Escalonador = () => {
 
     setProcessos(prev => [...prev, novoProcesso]);
     setProcessosIniciais(prev => [...prev, novoProcesso]);
+    setMensagens(prev => [...prev, `Processo ${novoProcesso.id} adicionado.`]);
   };
 
   const removerProcesso = (id) => {
     setProcessos(prev => prev.filter(p => p.id !== id));
     setProcessosIniciais(prev => prev.filter(p => p.id !== id));
+    setMensagens(prev => [...prev, `Processo ${id} removido.`]);
   };
 
   const iniciarEscalonamentoCircular = () => {
@@ -96,6 +99,7 @@ const Escalonador = () => {
 
       if (processo.tempoRestante === 0) {
         processo.finalizado = true;
+        setMensagens(prev => [...prev, `Processo ${processo.id} finalizado.`]);
       } else {
         fila.push(processo);
       }
@@ -152,6 +156,7 @@ const Escalonador = () => {
 
       setTempoAtual(tempoCorrente);
       setProcessos(prev => prev.map(p => (p.id === processo.id ? processo : p)));
+      setMensagens(prev => [...prev, `Processo ${processo.id} finalizado.`]);
     }, 1000);
   };
 
@@ -165,12 +170,14 @@ const Escalonador = () => {
     <div className="container">
       <div className="card">
         <h2>Simulador de Escalonamento de Processos</h2>
-        <button onClick={criarProcessosAleatorios} disabled={emExecucao}>
-          Criar Processos Aleatórios
-        </button>
-        <button onClick={adicionarProcesso} disabled={emExecucao}>
-          Adicionar Processo
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <button onClick={criarProcessosAleatorios} disabled={emExecucao}>
+            Criar Processos Aleatórios
+          </button>
+          <button onClick={adicionarProcesso} disabled={emExecucao}>
+            Adicionar Processo
+          </button>
+        </div>
         <table border="1">
           <thead>
             <tr>
@@ -196,16 +203,7 @@ const Escalonador = () => {
                     disabled={emExecucao}
                   />
                 </td>
-                <td>
-                  <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    value={processo.tempoRestante}
-                    onChange={(e) => atualizarCampo(processo.id, 'tempoRestante', e.target.value)}
-                    disabled={emExecucao}
-                  />
-                </td>
+                <td>{processo.tempoRestante}</td> {/* Removido campo editável */}
                 <td>
                   <input
                     type="number"
@@ -266,6 +264,13 @@ const Escalonador = () => {
                   ))}
               </div>
             </div>
+          ))}
+        </div>
+
+        <h2>Mensagens</h2>
+        <div className="mensagens" style={{ maxHeight: '100px', overflowY: 'scroll', border: '1px solid #ccc', padding: '10px' }}>
+          {mensagens.map((mensagem, index) => (
+            <p key={index}>{mensagem}</p>
           ))}
         </div>
       </div>

@@ -124,4 +124,28 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
+  .scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .gantt-chart {
+    position: relative;
+  }
+  
+  .time-scale {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .scale-mark {
+    position: absolute;
+    bottom: -20px;
+    width: 30px; /* Ajuste conforme necessário */
+    text-align: center;
+  }
   

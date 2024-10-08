@@ -4,7 +4,7 @@ Este projeto é uma aplicação web desenvolvida em React que simula dois algori
 
 ## Funcionalidades
 
-- **Criar Processos Aleatórios**: Gera entre 3 a 8 processos aleatórios, com tempo de chegada e execução variando de 1 a 10.
+- **Criar Processos Aleatórios**: Gera entre 3 a 6 processos aleatórios, com tempo de chegada e execução variando de 1 a 8.
 - **Simulação de Algoritmos**: Executa as simulações de escalonamento usando os algoritmos Round Robin e SJF.
 - **Gráfico de Gantt**: Exibe o tempo de execução de cada processo em um gráfico de Gantt.
 - **Edição de Processos**: Permite editar os tempos de chegada, execução e restante dos processos.

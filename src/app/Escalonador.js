@@ -25,12 +25,12 @@ const Escalonador = () => {
 
   const criarProcessosAleatorios = () => {
     limparGrafico();
-    const numProcessos = Math.floor(Math.random() * 6) + 3; // Entre 3 e 8 processos
+    const numProcessos = Math.floor(Math.random() * 4) + 3; // Entre 3 e 6 processos
     const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
       id: index + 1,
-      tempoExecucao: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      tempoExecucao: Math.floor(Math.random() * 8) + 1, // Entre 1 e 8
       tempoRestante: 0, // Inicializado a zero, será ajustado depois
-      tempoChegada: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      tempoChegada: Math.floor(Math.random() * 8) + 1, // Entre 1 e 8
       finalizado: false
     }));
 
@@ -55,6 +55,7 @@ const Escalonador = () => {
     const intervalo = setInterval(() => {
       const processosDisponiveis = fila.filter(p => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0);
 
+      // Se não houver processos disponíveis, adicionar um tempo ocioso
       if (processosDisponiveis.length === 0) {
         if (fila.every(p => p.finalizado)) {
           clearInterval(intervalo);
@@ -62,6 +63,12 @@ const Escalonador = () => {
           restaurarProcessosOriginais(); // Reseta os processos
           return;
         }
+
+        // Adiciona tempo ocioso ao gráfico de Gantt
+        setGanttChart(prev => [
+          ...prev,
+          { processoId: 'Ocioso', tempoInicio: tempoCorrente, tempoFim: tempoCorrente + 1 }
+        ]);
         tempoCorrente++;
         return;
       }
@@ -101,6 +108,7 @@ const Escalonador = () => {
         .filter(p => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0)
         .sort((a, b) => a.tempoRestante - b.tempoRestante);
 
+      // Se não houver processos disponíveis, adicionar um tempo ocioso
       if (processosDisponiveis.length === 0) {
         if (fila.every(p => p.finalizado)) {
           clearInterval(intervalo);
@@ -108,6 +116,12 @@ const Escalonador = () => {
           restaurarProcessosOriginais(); // Reseta os processos
           return;
         }
+
+        // Adiciona tempo ocioso ao gráfico de Gantt
+        setGanttChart(prev => [
+          ...prev,
+          { processoId: 'Ocioso', tempoInicio: tempoCorrente, tempoFim: tempoCorrente + 1 }
+        ]);
         tempoCorrente++;
         return;
       }
@@ -196,6 +210,23 @@ const Escalonador = () => {
               </div>
             </div>
           ))}
+
+          {/* Visualização dos tempos ociosos */}
+          {ganttChart
+            .filter(entry => entry.processoId === 'Ocioso')
+            .map((entry, index) => (
+              <div key={index} className="gantt-bar ocioso">
+                <div
+                  style={{
+                    left: `${entry.tempoInicio * 30}px`,
+                    width: `${(entry.tempoFim - entry.tempoInicio) * 30}px`,
+                    backgroundColor: 'grey'
+                  }}
+                >
+                  Ocioso {entry.tempoInicio}-{entry.tempoFim}s
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </div>

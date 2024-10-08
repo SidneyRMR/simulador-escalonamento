@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import './Escalonador.css';
 
@@ -8,40 +8,70 @@ const Escalonador = () => {
   const [tempoAtual, setTempoAtual] = useState(0);
   const [emExecucao, setEmExecucao] = useState(false);
   const [ganttChart, setGanttChart] = useState([]);
+  const [processosIniciais, setProcessosIniciais] = useState([]);
 
   const limparGrafico = () => {
     setGanttChart([]);
     setTempoAtual(0);
   };
 
+  const criarProcessosAleatorios = () => {
+    limparGrafico();
+    const numProcessos = Math.floor(Math.random() * 6) + 3; // Entre 3 e 8 processos
+    const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
+      id: index + 1,
+      tempoExecucao: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      tempoRestante: 0, // Inicializado a zero, será ajustado depois
+      tempoChegada: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      finalizado: false
+    }));
+
+    // Inicializa tempoRestante com o valor de tempoExecução
+    const processosComTempoRestante = novosProcessos.map(p => ({
+      ...p,
+      tempoRestante: p.tempoExecucao
+    }));
+
+    setProcessos(processosComTempoRestante);
+    setProcessosIniciais(processosComTempoRestante); // Salva o estado inicial
+  };
+
   const iniciarEscalonamentoCircular = () => {
-    if (processos.length === 0) return; // Não faz nada se não houver processos
-    limparGrafico(); // Limpa o gráfico antes de iniciar a simulação
+    if (processos.length === 0) return;
+    limparGrafico();
     setEmExecucao(true);
-    const fila = processos.map(p => ({ ...p })); // Cria uma cópia dos processos
+
+    const fila = processosIniciais.map(p => ({ ...p })); // Cópia dos processos
     let tempoCorrente = 0;
 
     const intervalo = setInterval(() => {
-      if (fila.length === 0) {
-        clearInterval(intervalo);
-        setEmExecucao(false);
+      const processosDisponiveis = fila.filter(p => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0);
+
+      if (processosDisponiveis.length === 0) {
+        if (fila.every(p => p.finalizado)) {
+          clearInterval(intervalo);
+          setEmExecucao(false);
+          return;
+        }
+        tempoCorrente++;
         return;
       }
 
-      let processo = fila.shift();
-      if (processo.tempoRestante > quantum) {
-        tempoCorrente += quantum;
-        processo.tempoRestante -= quantum;
-        fila.push(processo);
-      } else {
-        tempoCorrente += processo.tempoRestante;
-        processo.tempoRestante = 0;
+      let processo = processosDisponiveis.shift();
+      const tempoExecutado = Math.min(processo.tempoRestante, quantum);
+
+      processo.tempoRestante -= tempoExecutado;
+      tempoCorrente += tempoExecutado;
+
+      if (processo.tempoRestante === 0) {
         processo.finalizado = true;
+      } else {
+        fila.push(processo);
       }
 
       setGanttChart(prev => [
         ...prev,
-        { processoId: processo.id, tempoInicio: tempoCorrente - quantum, tempoFim: tempoCorrente }
+        { processoId: processo.id, tempoInicio: tempoCorrente - tempoExecutado, tempoFim: tempoCorrente }
       ]);
 
       setTempoAtual(tempoCorrente);
@@ -50,58 +80,42 @@ const Escalonador = () => {
   };
 
   const iniciarEscalonamentoSJF = () => {
-    if (processos.length === 0) return; // Não faz nada se não houver processos
-    limparGrafico(); // Limpa o gráfico antes de iniciar a simulação
+    if (processos.length === 0) return;
+    limparGrafico();
     setEmExecucao(true);
-    const fila = processos.map(p => ({ ...p })); // Cria uma cópia dos processos
+
+    const fila = processosIniciais.map(p => ({ ...p })); // Cópia dos processos
     let tempoCorrente = 0;
 
-    // Ordena os processos com base no tempo de execução
-    const processosOrdenados = fila.sort((a, b) => a.tempoExecucao - b.tempoExecucao);
-
     const intervalo = setInterval(() => {
-      if (processosOrdenados.length === 0) {
-        clearInterval(intervalo);
-        setEmExecucao(false);
+      const processosDisponiveis = fila
+        .filter(p => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0)
+        .sort((a, b) => a.tempoRestante - b.tempoRestante);
+
+      if (processosDisponiveis.length === 0) {
+        if (fila.every(p => p.finalizado)) {
+          clearInterval(intervalo);
+          setEmExecucao(false);
+          return;
+        }
+        tempoCorrente++;
         return;
       }
-      let processo = processosOrdenados.shift();
-      tempoCorrente += processo.tempoExecucao;
 
-      // Atualiza o gráfico de Gantt
+      let processo = processosDisponiveis.shift();
+      tempoCorrente += processo.tempoRestante;
+
+      processo.tempoRestante = 0;
+      processo.finalizado = true;
+
       setGanttChart(prev => [
         ...prev,
         { processoId: processo.id, tempoInicio: tempoCorrente - processo.tempoExecucao, tempoFim: tempoCorrente }
       ]);
 
-      processo.finalizado = true;
       setTempoAtual(tempoCorrente);
       setProcessos(prev => prev.map(p => (p.id === processo.id ? processo : p)));
     }, 1000);
-  };
-
-  const criarProcessosAleatorios = () => {
-    limparGrafico(); // Limpa o gráfico antes de criar novos processos
-    const numProcessos = Math.floor(Math.random() * 6) + 3; // Entre 3 e 8 processos
-    const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
-      id: index + 1,
-      tempoExecucao: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
-      tempoRestante: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
-      tempoChegada: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
-      finalizado: false
-    }));
-    setProcessos(novosProcessos);
-  };
-
-  const atualizarProcesso = (id, campo, valor) => {
-    setProcessos(prev =>
-      prev.map(processo => {
-        if (processo.id === id) {
-          return { ...processo, [campo]: parseInt(valor, 10) }; // Atualiza o campo específico
-        }
-        return processo;
-      })
-    );
   };
 
   return (
@@ -119,43 +133,15 @@ const Escalonador = () => {
               <th>Tempo Restante</th>
               <th>Tempo de Chegada</th>
               <th>Status</th>
-              {/* <th>Ações</th> */}
             </tr>
           </thead>
           <tbody>
             {processos.map(processo => (
               <tr key={processo.id}>
                 <td>{processo.id}</td>
-                <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={processo.tempoExecucao}
-                    onChange={(e) => atualizarProcesso(processo.id, 'tempoExecucao', e.target.value)}
-                    disabled={emExecucao}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={processo.tempoRestante}
-                    onChange={(e) => atualizarProcesso(processo.id, 'tempoRestante', e.target.value)}
-                    disabled={emExecucao}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={processo.tempoChegada}
-                    onChange={(e) => atualizarProcesso(processo.id, 'tempoChegada', e.target.value)}
-                    disabled={emExecucao}
-                  />
-                </td>
+                <td>{processo.tempoExecucao}</td>
+                <td>{processo.tempoRestante}</td>
+                <td>{processo.tempoChegada}</td>
                 <td>{processo.finalizado ? 'Finalizado' : 'Em Execução'}</td>
               </tr>
             ))}
@@ -178,7 +164,7 @@ const Escalonador = () => {
 
         <h2>Gráfico de Gantt (Tempo x Processo)</h2>
         <div className="gantt-chart">
-          {processos.map((processo) => (
+          {processos.map(processo => (
             <div key={processo.id} className="gantt-row">
               <span>Processo {processo.id}</span>
               <div className="gantt-bar-container">

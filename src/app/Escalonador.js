@@ -1,15 +1,9 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Escalonador.css';
 
-const processosIniciais = [
-  { id: 1, tempoExecucao: 5, tempoRestante: 5, tempoChegada: 0, finalizado: false },
-  { id: 2, tempoExecucao: 8, tempoRestante: 8, tempoChegada: 0, finalizado: false },
-  { id: 3, tempoExecucao: 3, tempoRestante: 3, tempoChegada: 0, finalizado: false }
-];
-
 const Escalonador = () => {
-  const [processos, setProcessos] = useState(processosIniciais);
+  const [processos, setProcessos] = useState([]);
   const [quantum, setQuantum] = useState(2);
   const [tempoAtual, setTempoAtual] = useState(0);
   const [emExecucao, setEmExecucao] = useState(false);
@@ -18,7 +12,7 @@ const Escalonador = () => {
   const limparGrafico = () => {
     setGanttChart([]);
     setTempoAtual(0);
-    setProcessos(processosIniciais.map(p => ({ ...p, tempoRestante: p.tempoExecucao, finalizado: false })));
+    setProcessos([]);
   };
 
   const iniciarEscalonamentoCircular = () => {
@@ -83,10 +77,37 @@ const Escalonador = () => {
     }, 1000);
   };
 
+  const criarProcessosAleatorios = () => {
+    limparGrafico(); // Limpa o gráfico antes de criar novos processos
+    const numProcessos = Math.floor(Math.random() * 6) + 3; // Entre 3 e 8 processos
+    const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
+      id: index + 1,
+      tempoExecucao: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      tempoRestante: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      tempoChegada: Math.floor(Math.random() * 10) + 1, // Entre 1 e 10
+      finalizado: false
+    }));
+    setProcessos(novosProcessos);
+  };
+
+  const atualizarProcesso = (id, campo, valor) => {
+    setProcessos(prev =>
+      prev.map(processo => {
+        if (processo.id === id) {
+          return { ...processo, [campo]: parseInt(valor, 10) }; // Atualiza o campo específico
+        }
+        return processo;
+      })
+    );
+  };
+
   return (
     <div className="container">
       <div className="card">
         <h2>Processos</h2>
+        <button onClick={criarProcessosAleatorios} disabled={emExecucao}>
+          Criar Processos Aleatórios
+        </button>
         <table border="1">
           <thead>
             <tr>
@@ -95,15 +116,43 @@ const Escalonador = () => {
               <th>Tempo Restante</th>
               <th>Tempo de Chegada</th>
               <th>Status</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             {processos.map(processo => (
               <tr key={processo.id}>
                 <td>{processo.id}</td>
-                <td>{processo.tempoExecucao}</td>
-                <td>{processo.tempoRestante}</td>
-                <td>{processo.tempoChegada}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={processo.tempoExecucao}
+                    onChange={(e) => atualizarProcesso(processo.id, 'tempoExecucao', e.target.value)}
+                    disabled={emExecucao}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={processo.tempoRestante}
+                    onChange={(e) => atualizarProcesso(processo.id, 'tempoRestante', e.target.value)}
+                    disabled={emExecucao}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={processo.tempoChegada}
+                    onChange={(e) => atualizarProcesso(processo.id, 'tempoChegada', e.target.value)}
+                    disabled={emExecucao}
+                  />
+                </td>
                 <td>{processo.finalizado ? 'Finalizado' : 'Em Execução'}</td>
               </tr>
             ))}
@@ -155,4 +204,3 @@ const Escalonador = () => {
 };
 
 export default Escalonador;
-

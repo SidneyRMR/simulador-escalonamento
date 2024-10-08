@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Simulação de Escalonamento de Processos
 
-## Getting Started
+Este projeto é uma aplicação web desenvolvida em React que simula dois algoritmos de escalonamento de processos em sistemas operacionais: **Round Robin** e **Shortest Job First (SJF)**. A aplicação permite a criação e manipulação de processos, visualização do gráfico de Gantt e análise dos tempos de execução.
 
-First, run the development server:
+## Funcionalidades
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Criar Processos Aleatórios**: Gera entre 3 a 8 processos aleatórios, com tempo de chegada e execução variando de 1 a 10.
+- **Simulação de Algoritmos**: Executa as simulações de escalonamento usando os algoritmos Round Robin e SJF.
+- **Gráfico de Gantt**: Exibe o tempo de execução de cada processo em um gráfico de Gantt.
+- **Edição de Processos**: Permite editar os tempos de chegada, execução e restante dos processos.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tecnologias Utilizadas
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- React
+- CSS
+- JavaScript
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Instalação
 
-## Learn More
+1. Clone o repositório:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/SidneyRMR/simulador-escalonamento
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Navegue até o diretório do projeto:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```bash
+   cd simulador-escalonamento
+   ```
 
-## Deploy on Vercel
+3. Instale as dependências:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+4. Inicie a aplicação:
+
+   ```bash
+   npm start
+   ```
+
+5. Abra seu navegador e acesse `http://localhost:3000`.
+
+## Uso
+
+- Crie processos aleatórios clicando no botão "Criar Processos Aleatórios".
+- Edite os tempos de chegada e execução dos processos, se necessário.
+- Escolha um algoritmo de escalonamento (Round Robin ou SJF) e clique no botão correspondente para iniciar a simulação.
+- O gráfico de Gantt será atualizado em tempo real, mostrando a execução de cada processo.
+
+## Contribuição
+
+- `https://github.com/brendagaudencio`
+- `https://github.com/renan-mazzilli`
+
+## Licença
+
+Este projeto é licenciado sob a [MIT License](LICENSE).

@@ -12,20 +12,22 @@ const Escalonador = () => {
   const limparGrafico = () => {
     setGanttChart([]);
     setTempoAtual(0);
-    setProcessos([]);
   };
 
   const iniciarEscalonamentoCircular = () => {
+    if (processos.length === 0) return; // Não faz nada se não houver processos
     limparGrafico(); // Limpa o gráfico antes de iniciar a simulação
     setEmExecucao(true);
-    let fila = [...processos];
+    const fila = processos.map(p => ({ ...p })); // Cria uma cópia dos processos
     let tempoCorrente = 0;
+
     const intervalo = setInterval(() => {
       if (fila.length === 0) {
         clearInterval(intervalo);
         setEmExecucao(false);
         return;
       }
+
       let processo = fila.shift();
       if (processo.tempoRestante > quantum) {
         tempoCorrente += quantum;
@@ -43,14 +45,15 @@ const Escalonador = () => {
       ]);
 
       setTempoAtual(tempoCorrente);
-      setProcessos([...processos.map(p => (p.id === processo.id ? processo : p))]);
+      setProcessos(prev => prev.map(p => (p.id === processo.id ? processo : p)));
     }, 1000);
   };
 
   const iniciarEscalonamentoSJF = () => {
+    if (processos.length === 0) return; // Não faz nada se não houver processos
     limparGrafico(); // Limpa o gráfico antes de iniciar a simulação
     setEmExecucao(true);
-    const fila = [...processos];
+    const fila = processos.map(p => ({ ...p })); // Cria uma cópia dos processos
     let tempoCorrente = 0;
 
     // Ordena os processos com base no tempo de execução
@@ -73,7 +76,7 @@ const Escalonador = () => {
 
       processo.finalizado = true;
       setTempoAtual(tempoCorrente);
-      setProcessos([...processos.map(p => (p.id === processo.id ? processo : p))]);
+      setProcessos(prev => prev.map(p => (p.id === processo.id ? processo : p)));
     }, 1000);
   };
 
@@ -104,7 +107,7 @@ const Escalonador = () => {
   return (
     <div className="container">
       <div className="card">
-        <h2>Processos</h2>
+        <h2>Simulador de Escalonamento de Processos</h2>
         <button onClick={criarProcessosAleatorios} disabled={emExecucao}>
           Criar Processos Aleatórios
         </button>
@@ -116,7 +119,7 @@ const Escalonador = () => {
               <th>Tempo Restante</th>
               <th>Tempo de Chegada</th>
               <th>Status</th>
-              <th>Ações</th>
+              {/* <th>Ações</th> */}
             </tr>
           </thead>
           <tbody>

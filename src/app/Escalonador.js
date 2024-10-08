@@ -25,7 +25,7 @@ const Escalonador = () => {
 
   const criarProcessosAleatorios = () => {
     limparGrafico();
-    const numProcessos = Math.floor(Math.random() * 4) + 3; // Entre 3 e 6 processos
+    const numProcessos = Math.floor(Math.random() * 4) + 3; // Entre 3 e 8 processos
     const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
       id: index + 1,
       tempoExecucao: Math.floor(Math.random() * 8) + 1, // Entre 1 e 8
@@ -67,7 +67,7 @@ const Escalonador = () => {
         // Adiciona tempo ocioso ao gráfico de Gantt
         setGanttChart(prev => [
           ...prev,
-          { processoId: 'Ocioso', tempoInicio: tempoCorrente, tempoFim: tempoCorrente + 1 }
+          { processoId: 'Ocioso', tempoInicio: tempoCorrente - 1, tempoFim: tempoCorrente } // Ajuste para corrigir o tempo
         ]);
         tempoCorrente++;
         return;
@@ -120,7 +120,7 @@ const Escalonador = () => {
         // Adiciona tempo ocioso ao gráfico de Gantt
         setGanttChart(prev => [
           ...prev,
-          { processoId: 'Ocioso', tempoInicio: tempoCorrente, tempoFim: tempoCorrente + 1 }
+          { processoId: 'Ocioso', tempoInicio: tempoCorrente - 1, tempoFim: tempoCorrente } // Ajuste para corrigir o tempo
         ]);
         tempoCorrente++;
         return;
@@ -193,40 +193,25 @@ const Escalonador = () => {
               <span>Processo {processo.id}</span>
               <div className="gantt-bar-container">
                 {ganttChart
-                  .filter(entry => entry.processoId === processo.id)
+                  .filter(entry => entry.processoId === processo.id || entry.processoId === 'Ocioso')
                   .map((entry, index) => (
                     <div
                       key={index}
-                      className="gantt-bar"
+                      className={`gantt-bar ${entry.processoId === 'Ocioso' ? 'ocioso' : ''}`}
                       style={{
                         left: `${entry.tempoInicio * 30}px`,
                         width: `${(entry.tempoFim - entry.tempoInicio) * 30}px`,
-                        backgroundColor: `hsl(${(entry.processoId * 100) % 360}, 70%, 50%)`
+                        backgroundColor: entry.processoId === 'Ocioso'
+                          ? 'grey'
+                          : `hsl(${(entry.processoId * 100) % 360}, 70%, 50%)`
                       }}
                     >
-                      {entry.tempoInicio}-{entry.tempoFim}s
+                      {entry.processoId === 'Ocioso' ? '●' : ''} {/* Símbolo para Ocioso */}
                     </div>
                   ))}
               </div>
             </div>
           ))}
-
-          {/* Visualização dos tempos ociosos */}
-          {ganttChart
-            .filter(entry => entry.processoId === 'Ocioso')
-            .map((entry, index) => (
-              <div key={index} className="gantt-bar ocioso">
-                <div
-                  style={{
-                    left: `${entry.tempoInicio * 30}px`,
-                    width: `${(entry.tempoFim - entry.tempoInicio) * 30}px`,
-                    backgroundColor: 'grey'
-                  }}
-                >
-                  Ocioso {entry.tempoInicio}-{entry.tempoFim}s
-                </div>
-              </div>
-            ))}
         </div>
       </div>
     </div>

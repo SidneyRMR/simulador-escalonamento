@@ -77,15 +77,19 @@ const Escalonador = () => {
     if (processos.length === 0) return;
     limparGrafico();
     setEmExecucao(true);
-
+  
+    // Copiar os processos originais para a fila
     const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
-
+    let indiceAtual = 0; // Índice para controlar a posição na fila
+  
     const intervalo = setInterval(() => {
+      // Filtrar processos que chegaram e ainda têm tempo restante
       const processosDisponiveis = fila.filter(
         (p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0
       );
-
+  
+      // Se não houver processos disponíveis, verificar se todos finalizaram
       if (processosDisponiveis.length === 0) {
         if (fila.every((p) => p.finalizado)) {
           clearInterval(intervalo);
@@ -93,7 +97,8 @@ const Escalonador = () => {
           restaurarProcessosOriginais();
           return;
         }
-
+  
+        // Adicionar tempo ocioso no gráfico de Gantt
         setGanttChart((prev) => [
           ...prev,
           {
@@ -105,39 +110,58 @@ const Escalonador = () => {
         tempoCorrente++;
         return;
       }
-
-      let processo = processosDisponiveis.shift();
-      const tempoExecutado = Math.min(processo.tempoRestante, quantum);
-
-      processo.tempoRestante -= tempoExecutado;
-      tempoCorrente += tempoExecutado;
-
-      if (processo.tempoRestante === 0) {
-        processo.finalizado = true;
-        setMensagens((prev) => [
-          ...prev,
-          `Processo ${processo.id} finalizado.`,
-        ]);
-      } else {
-        fila.push(processo);
+  
+      // Garantir que o índice atual esteja dentro do intervalo da fila
+      if (indiceAtual >= fila.length) {
+        indiceAtual = 0;
       }
-
-      setGanttChart((prev) => [
-        ...prev,
-        {
-          processoId: processo.id,
-          tempoInicio: tempoCorrente - tempoExecutado,
-          tempoFim: tempoCorrente,
-        },
-      ]);
-
-      setTempoAtual(tempoCorrente);
-      setProcessos((prev) =>
-        prev.map((p) => (p.id === processo.id ? processo : p))
-      );
-    }, 1000);
+  
+      // Selecionar o próximo processo baseado no índice atual
+      let processo = fila[indiceAtual];
+  
+      // Verificar se o processo está disponível para execução
+      if (processo.tempoChegada <= tempoCorrente && processo.tempoRestante > 0) {
+        const tempoExecutado = Math.min(processo.tempoRestante, quantum);
+  
+        // Atualizar tempo restante do processo e o tempo corrente do sistema
+        processo.tempoRestante -= tempoExecutado;
+        tempoCorrente += tempoExecutado;
+  
+        // Se o processo terminou, marcá-lo como finalizado
+        if (processo.tempoRestante === 0) {
+          processo.finalizado = true;
+          setMensagens((prev) => [
+            ...prev,
+            `Processo ${processo.id} finalizado.`,
+          ]);
+        }
+  
+        // Atualizar gráfico de Gantt com o intervalo de execução do processo
+        setGanttChart((prev) => [
+          ...prev,
+          {
+            processoId: processo.id,
+            tempoInicio: tempoCorrente - tempoExecutado,
+            tempoFim: tempoCorrente,
+          },
+        ]);
+  
+        // Atualizar o estado dos processos
+        setTempoAtual(tempoCorrente);
+        setProcessos((prev) =>
+          prev.map((p) => (p.id === processo.id ? processo : p))
+        );
+      }
+  
+      // Avançar para o próximo processo na fila (circular)
+      indiceAtual++;
+      if (indiceAtual >= fila.length) {
+        indiceAtual = 0; // Reiniciar o índice para simular o comportamento circular
+      }
+  
+    }, 1000); // Intervalo de 1 segundo para simulação
   };
-
+  
   const iniciarEscalonamentoSJF = () => {
     if (processos.length === 0) return;
     limparGrafico();
@@ -237,7 +261,7 @@ const Escalonador = () => {
                   <input
                     type="number"
                     min="1"
-                    max="10"
+                    max="8"
                     value={processo.tempoExecucao}
                     onChange={(e) =>
                       atualizarCampo(
@@ -255,7 +279,7 @@ const Escalonador = () => {
                   <input
                     type="number"
                     min="0"
-                    max="10"
+                    max="8"
                     value={processo.tempoChegada}
                     onChange={(e) =>
                       atualizarCampo(

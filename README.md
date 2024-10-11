@@ -54,6 +54,7 @@ Este projeto é uma aplicação web desenvolvida em React que simula dois algori
 
 - `https://github.com/brendagaudencio`
 - `https://github.com/renan-mazzilli`
+- `https://github.com/thaitoGB`
 
 ## Licença
 

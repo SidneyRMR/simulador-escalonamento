@@ -11,6 +11,8 @@ const Escalonador = () => {
   const [processosIniciais, setProcessosIniciais] = useState([]);
   const [mensagens, setMensagens] = useState([]);
 
+  const TEMPO_PROCESSOS = 8;
+
   const limparGrafico = () => {
     setGanttChart([]);
     setTempoAtual(0);
@@ -31,9 +33,9 @@ const Escalonador = () => {
     const numProcessos = Math.floor(Math.random() * 4) + 3; // Entre 3 e 6 processos
     const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
       id: index + 1,
-      tempoExecucao: Math.floor(Math.random() * 8) + 1, // Entre 1 e 8
+      tempoExecucao: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1, // Entre 1 e 8
       tempoRestante: 0,
-      tempoChegada: Math.floor(Math.random() * 8) + 1,
+      tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
       finalizado: false,
     }));
 
@@ -49,12 +51,14 @@ const Escalonador = () => {
   const adicionarProcesso = () => {
     const novoProcesso = {
       id: processos.length + 1,
-      tempoExecucao: Math.floor(Math.random() * 10) + 1,
-      tempoRestante: Math.floor(Math.random() * 10) + 1,
-      tempoChegada: Math.floor(Math.random() * 10) + 1,
+      tempoExecucao: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
+      tempoRestante: 0,  // Inicializado aqui, será atualizado abaixo
+      tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
       finalizado: false,
     };
-
+  
+    novoProcesso.tempoRestante = novoProcesso.tempoExecucao;  // Correção da atribuição
+  
     setProcessos((prev) => [...prev, novoProcesso]);
     setProcessosIniciais((prev) => [...prev, novoProcesso]);
     setMensagens((prev) => [
@@ -62,7 +66,7 @@ const Escalonador = () => {
       `Processo ${novoProcesso.id} adicionado.`,
     ]);
   };
-
+  
   const removerProcesso = (id) => {
     setProcessos((prev) => prev.filter((p) => p.id !== id));
     setProcessosIniciais((prev) => prev.filter((p) => p.id !== id));

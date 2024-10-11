@@ -1,6 +1,6 @@
-'use client';
-import React, { useState } from 'react';
-import './Escalonador.css';
+"use client";
+import React, { useState } from "react";
+import "./Escalonador.css";
 
 const Escalonador = () => {
   const [processos, setProcessos] = useState([]);
@@ -17,11 +17,13 @@ const Escalonador = () => {
   };
 
   const restaurarProcessosOriginais = () => {
-    setProcessos(processosIniciais.map(p => ({
-      ...p,
-      tempoRestante: p.tempoExecucao,
-      finalizado: false
-    })));
+    setProcessos(
+      processosIniciais.map((p) => ({
+        ...p,
+        tempoRestante: p.tempoExecucao,
+        finalizado: false,
+      }))
+    );
   };
 
   const criarProcessosAleatorios = () => {
@@ -32,12 +34,12 @@ const Escalonador = () => {
       tempoExecucao: Math.floor(Math.random() * 8) + 1, // Entre 1 e 8
       tempoRestante: 0,
       tempoChegada: Math.floor(Math.random() * 8) + 1,
-      finalizado: false
+      finalizado: false,
     }));
 
-    const processosComTempoRestante = novosProcessos.map(p => ({
+    const processosComTempoRestante = novosProcessos.map((p) => ({
       ...p,
-      tempoRestante: p.tempoExecucao
+      tempoRestante: p.tempoExecucao,
     }));
 
     setProcessos(processosComTempoRestante);
@@ -50,18 +52,21 @@ const Escalonador = () => {
       tempoExecucao: Math.floor(Math.random() * 10) + 1,
       tempoRestante: Math.floor(Math.random() * 10) + 1,
       tempoChegada: Math.floor(Math.random() * 10) + 1,
-      finalizado: false
+      finalizado: false,
     };
 
-    setProcessos(prev => [...prev, novoProcesso]);
-    setProcessosIniciais(prev => [...prev, novoProcesso]);
-    setMensagens(prev => [...prev, `Processo ${novoProcesso.id} adicionado.`]);
+    setProcessos((prev) => [...prev, novoProcesso]);
+    setProcessosIniciais((prev) => [...prev, novoProcesso]);
+    setMensagens((prev) => [
+      ...prev,
+      `Processo ${novoProcesso.id} adicionado.`,
+    ]);
   };
 
   const removerProcesso = (id) => {
-    setProcessos(prev => prev.filter(p => p.id !== id));
-    setProcessosIniciais(prev => prev.filter(p => p.id !== id));
-    setMensagens(prev => [...prev, `Processo ${id} removido.`]);
+    setProcessos((prev) => prev.filter((p) => p.id !== id));
+    setProcessosIniciais((prev) => prev.filter((p) => p.id !== id));
+    setMensagens((prev) => [...prev, `Processo ${id} removido.`]);
   };
 
   const iniciarEscalonamentoCircular = () => {
@@ -69,23 +74,29 @@ const Escalonador = () => {
     limparGrafico();
     setEmExecucao(true);
 
-    const fila = processos.map(p => ({ ...p }));
+    const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
 
     const intervalo = setInterval(() => {
-      const processosDisponiveis = fila.filter(p => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0);
+      const processosDisponiveis = fila.filter(
+        (p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0
+      );
 
       if (processosDisponiveis.length === 0) {
-        if (fila.every(p => p.finalizado)) {
+        if (fila.every((p) => p.finalizado)) {
           clearInterval(intervalo);
           setEmExecucao(false);
           restaurarProcessosOriginais();
           return;
         }
 
-        setGanttChart(prev => [
+        setGanttChart((prev) => [
           ...prev,
-          { processoId: 'Ocioso', tempoInicio: tempoCorrente - 1, tempoFim: tempoCorrente }
+          {
+            processoId: "Ocioso",
+            tempoInicio: tempoCorrente - 1,
+            tempoFim: tempoCorrente,
+          },
         ]);
         tempoCorrente++;
         return;
@@ -99,18 +110,27 @@ const Escalonador = () => {
 
       if (processo.tempoRestante === 0) {
         processo.finalizado = true;
-        setMensagens(prev => [...prev, `Processo ${processo.id} finalizado.`]);
+        setMensagens((prev) => [
+          ...prev,
+          `Processo ${processo.id} finalizado.`,
+        ]);
       } else {
         fila.push(processo);
       }
 
-      setGanttChart(prev => [
+      setGanttChart((prev) => [
         ...prev,
-        { processoId: processo.id, tempoInicio: tempoCorrente - tempoExecutado, tempoFim: tempoCorrente }
+        {
+          processoId: processo.id,
+          tempoInicio: tempoCorrente - tempoExecutado,
+          tempoFim: tempoCorrente,
+        },
       ]);
 
       setTempoAtual(tempoCorrente);
-      setProcessos(prev => prev.map(p => (p.id === processo.id ? processo : p)));
+      setProcessos((prev) =>
+        prev.map((p) => (p.id === processo.id ? processo : p))
+      );
     }, 1000);
   };
 
@@ -119,25 +139,29 @@ const Escalonador = () => {
     limparGrafico();
     setEmExecucao(true);
 
-    const fila = processos.map(p => ({ ...p }));
+    const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
 
     const intervalo = setInterval(() => {
       const processosDisponiveis = fila
-        .filter(p => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0)
+        .filter((p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0)
         .sort((a, b) => a.tempoRestante - b.tempoRestante);
 
       if (processosDisponiveis.length === 0) {
-        if (fila.every(p => p.finalizado)) {
+        if (fila.every((p) => p.finalizado)) {
           clearInterval(intervalo);
           setEmExecucao(false);
           restaurarProcessosOriginais();
           return;
         }
 
-        setGanttChart(prev => [
+        setGanttChart((prev) => [
           ...prev,
-          { processoId: 'Ocioso', tempoInicio: tempoCorrente - 1, tempoFim: tempoCorrente }
+          {
+            processoId: "Ocioso",
+            tempoInicio: tempoCorrente - 1,
+            tempoFim: tempoCorrente,
+          },
         ]);
         tempoCorrente++;
         return;
@@ -149,28 +173,40 @@ const Escalonador = () => {
       processo.tempoRestante = 0;
       processo.finalizado = true;
 
-      setGanttChart(prev => [
+      setGanttChart((prev) => [
         ...prev,
-        { processoId: processo.id, tempoInicio: tempoCorrente - processo.tempoExecucao, tempoFim: tempoCorrente }
+        {
+          processoId: processo.id,
+          tempoInicio: tempoCorrente - processo.tempoExecucao,
+          tempoFim: tempoCorrente,
+        },
       ]);
 
       setTempoAtual(tempoCorrente);
-      setProcessos(prev => prev.map(p => (p.id === processo.id ? processo : p)));
-      setMensagens(prev => [...prev, `Processo ${processo.id} finalizado.`]);
+      setProcessos((prev) =>
+        prev.map((p) => (p.id === processo.id ? processo : p))
+      );
+      setMensagens((prev) => [...prev, `Processo ${processo.id} finalizado.`]);
     }, 1000);
   };
 
   const atualizarCampo = (id, campo, valor) => {
-    setProcessos(prev => prev.map(processo => (
-      processo.id === id ? { ...processo, [campo]: parseInt(valor, 10) } : processo
-    )));
+    setProcessos((prev) =>
+      prev.map((processo) =>
+        processo.id === id
+          ? { ...processo, [campo]: parseInt(valor, 10) }
+          : processo
+      )
+    );
   };
 
   return (
     <div className="container">
       <div className="card">
-        <h2>Simulador de Escalonamento de Processos</h2>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <h2 className="text-center font-bold text-3xl text-blue-950 mt-3 mb-2">
+          Simulador de Escalonamento de Processos
+        </h2>
+        <div className="flex justify-center gap-4 mb-8">
           <button onClick={criarProcessosAleatorios} disabled={emExecucao}>
             Criar Processos Aleatórios
           </button>
@@ -190,7 +226,7 @@ const Escalonador = () => {
             </tr>
           </thead>
           <tbody>
-            {processos.map(processo => (
+            {processos.map((processo) => (
               <tr key={processo.id}>
                 <td>{processo.id}</td>
                 <td>
@@ -199,24 +235,40 @@ const Escalonador = () => {
                     min="1"
                     max="10"
                     value={processo.tempoExecucao}
-                    onChange={(e) => atualizarCampo(processo.id, 'tempoExecucao', e.target.value)}
+                    onChange={(e) =>
+                      atualizarCampo(
+                        processo.id,
+                        "tempoExecucao",
+                        e.target.value
+                      )
+                    }
                     disabled={emExecucao}
                   />
                 </td>
-                <td>{processo.tempoRestante}</td> {/* Removido campo editável */}
+                <td>{processo.tempoRestante}</td>{" "}
+                {/* Removido campo editável */}
                 <td>
                   <input
                     type="number"
                     min="0"
                     max="10"
                     value={processo.tempoChegada}
-                    onChange={(e) => atualizarCampo(processo.id, 'tempoChegada', e.target.value)}
+                    onChange={(e) =>
+                      atualizarCampo(
+                        processo.id,
+                        "tempoChegada",
+                        e.target.value
+                      )
+                    }
                     disabled={emExecucao}
                   />
                 </td>
-                <td>{processo.finalizado ? 'Finalizado' : 'Em Execução'}</td>
+                <td>{processo.finalizado ? "Finalizado" : "Em Execução"}</td>
                 <td>
-                  <button onClick={() => removerProcesso(processo.id)} disabled={emExecucao}>
+                  <button
+                    onClick={() => removerProcesso(processo.id)}
+                    disabled={emExecucao}
+                  >
                     Remover
                   </button>
                 </td>
@@ -225,41 +277,62 @@ const Escalonador = () => {
           </tbody>
         </table>
 
-        <h2>Simulação de Escalonamento</h2>
-        <p>Tempo Atual: {tempoAtual}s</p>
+        <h2 className="text-center font-bold text-2xl text-blue-950 mt-3">
+          Algoritmo de Escalonamento
+        </h2>
+        
 
-        <div>
-          <h3>Round Robin (Quantum: {quantum})</h3>
-          <button onClick={iniciarEscalonamentoCircular} disabled={emExecucao}>
-            Executar Round Robin
-          </button>
-          <h3>SJF</h3>
-          <button onClick={iniciarEscalonamentoSJF} disabled={emExecucao}>
-            Executar SJF
-          </button>
+        <div className="flex justify-center gap-4 my-5">
+          <div>
+            <h3 className="text-center font-normal text-base text-blue-950">Round Robin (Quantum: {quantum})</h3>
+            <button
+              onClick={iniciarEscalonamentoCircular}
+              disabled={emExecucao}
+            >
+              Executar Round Robin
+            </button>
+          </div>
+          <div>
+            <h3 className="text-center font-normal text-base text-blue-950">Shortest Job First</h3>
+            <button onClick={iniciarEscalonamentoSJF} disabled={emExecucao}>
+              Executar SJF
+            </button>
+          </div>
         </div>
 
-        <h2>Gráfico de Gantt (Tempo x Processo)</h2>
+        <h2 className="text-center font-bold text-2xl text-blue-950 mt-8">Gráfico de Gantt (Tempo x Processo)</h2>
+
+        <p className="text-center text-xl font-semibold mb-6">Tempo Atual: {tempoAtual}s</p>
+
         <div className="gantt-chart">
-          {processos.map(processo => (
+          {processos.map((processo) => (
             <div key={processo.id} className="gantt-row">
               <span>Processo {processo.id}</span>
               <div className="gantt-bar-container">
                 {ganttChart
-                  .filter(entry => entry.processoId === processo.id || entry.processoId === 'Ocioso')
+                  .filter(
+                    (entry) =>
+                      entry.processoId === processo.id ||
+                      entry.processoId === "Ocioso"
+                  )
                   .map((entry, index) => (
                     <div
                       key={index}
-                      className={`gantt-bar ${entry.processoId === 'Ocioso' ? 'ocioso' : ''}`}
+                      className={`gantt-bar ${
+                        entry.processoId === "Ocioso" ? "ocioso" : ""
+                      }`}
                       style={{
                         left: `${entry.tempoInicio * 30}px`,
                         width: `${(entry.tempoFim - entry.tempoInicio) * 30}px`,
-                        backgroundColor: entry.processoId === 'Ocioso'
-                          ? 'grey'
-                          : `hsl(${(entry.processoId * 100) % 360}, 70%, 50%)`
+                        backgroundColor:
+                          entry.processoId === "Ocioso"
+                            ? "grey"
+                            : `hsl(${
+                                (entry.processoId * 100) % 360
+                              }, 70%, 50%)`,
                       }}
                     >
-                      {entry.processoId === 'Ocioso' ? '●' : ''}
+                      {entry.processoId === "Ocioso" ? "●" : ""}
                     </div>
                   ))}
               </div>
@@ -267,8 +340,18 @@ const Escalonador = () => {
           ))}
         </div>
 
-        <h2>Mensagens</h2>
-        <div className="mensagens" style={{ maxHeight: '100px', overflowY: 'scroll', border: '1px solid #ccc', padding: '10px' }}>
+        <h2 className="text-center font-semibold text-xl my-8">Mensagens</h2>
+        <div
+          className="mensagens"
+          style={{
+            marginInline: "auto",
+            maxWidth: "90%",
+            maxHeight: "200px",
+            overflowY: "scroll",
+            border: "1px solid #ccc",
+            padding: "10px",
+          }}
+        >
           {mensagens.map((mensagem, index) => (
             <p key={index}>{mensagem}</p>
           ))}

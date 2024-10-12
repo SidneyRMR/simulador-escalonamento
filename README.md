@@ -29,7 +29,7 @@ O escalonamento por Prioridade (Priority Scheduling) atribui a cada processo uma
 - CSS
 - JavaScript
 
-## Instalação
+## Instalação ⌨
 
 1. Clone o repositório:
 

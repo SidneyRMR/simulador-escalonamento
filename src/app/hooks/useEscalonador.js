@@ -56,7 +56,7 @@ export const useEscalonador = () => {
       tempoRestante: 0,
       tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
       finalizado: false,
-      estadoExecucao: "Aguardando", // Estado inicial
+      estadoExecucao: "-", // Estado inicial
     };
 
     setProcessos((prev) => [...prev, novoProcesso]);

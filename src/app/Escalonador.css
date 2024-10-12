@@ -140,3 +140,31 @@ button:disabled {
   cursor: not-allowed;
 }
 
+
+/* Tooltip styling */
+.tooltip {
+  position: absolute;
+  bottom: 110%; /* Move a tooltip mais para cima, acima do botão */
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  transform-origin: bottom center;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  width: 400px;
+  font-size: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease;
+  z-index: 10;
+  pointer-events: none; /* Garante que a tooltip não bloqueie o clique */
+}
+
+.group:hover .tooltip {
+  transform: translateX(-50%) scale(1);
+}
+
+.escalonador-option {
+  position: relative;
+  margin-bottom: 40px; /* Adiciona espaço extra abaixo para evitar sobreposição */
+}

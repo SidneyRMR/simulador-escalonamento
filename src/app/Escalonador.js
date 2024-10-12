@@ -50,7 +50,7 @@ const Escalonador = () => {
           <h2 className="text-center font-bold text-2xl text-blue-950 mt-2">
             Algoritmo de Escalonamento
           </h2>
-          <div className="flex justify-center my-5 flex-wrap">
+          <div className="flex justify-center gap-6 my-5 flex-wrap">
             <div className="escalonador-option">
               <h3 className="text-center font-normal text-base text-blue-950">
                 Round Robin

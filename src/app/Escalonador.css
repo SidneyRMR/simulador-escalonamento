@@ -2,33 +2,59 @@ body {
   font-family: "Arial", sans-serif;
   background-color: #f4f4f9;
   margin: 0;
-  padding: 20px;
+  padding: 0;
   color: #333;
 }
 
 table {
   max-width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-inline: auto;
 }
 
-table,
-th,
+/* Cores para os status dos processos */
+.status-em-execucao {
+  background-color: #28a745; /* Verde forte para "Em Execução" */
+  color: white; /* Texto branco */
+}
+
+.status-finalizado {
+  background-color: #dc3545; /* Vermelho forte para "Finalizado" */
+  color: white; /* Texto branco */
+}
+
+.status-aguardando {
+  background-color: #ffc107; /* Amarelo forte para "Aguardando" */
+  color: black; /* Texto preto para melhor legibilidade */
+}
+
+.status-pausando {
+  background-color: #ff8c00; /* Laranja forte para "Pausando" */
+  color: white; /* Texto branco */
+}
+
+.status-padrao {
+  background-color: #ffffff; /* Cor padrão (branco) */
+  color: #333; /* Texto padrão */
+}
+
+table {
+  max-width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  margin-inline: auto;
+}
+
 td {
-  border: 1px solid #ddd;
   padding: 10px;
 }
 
 th {
-  background-color: #172554;
-  color: white;
+  background-color: #172554; /* Cor do cabeçalho */
+  color: white; /* Texto do cabeçalho */
   text-align: left;
   font-weight: bold;
-}
-
-td {
-  background-color: #fff;
 }
 
 button {
@@ -51,22 +77,11 @@ button:hover {
   background-color: #0056b3;
 }
 
-.gantt-chart {
-  position: relative;
-  width: 100%;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: white;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
-}
-
 .gantt-row {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  height: 50px;
+  margin-bottom: 10px;
+  height: 35px;
 }
 
 .gantt-bar-container {
@@ -76,19 +91,25 @@ button:hover {
   border-right: 1px solid #ddd;
   background-color: #f4f4f9;
   border-radius: 5px;
+  flex-grow: 1;
+  margin-left: 10px;
 }
 
 .gantt-bar {
   position: absolute;
-  height: 40px;
-  top: 5px;
-  line-height: 40px;
+  height: 30px;
+  top: 10px;
+  line-height: 30px;
   text-align: center;
   color: white;
   font-weight: bold;
   border-radius: 5px;
   z-index: 1;
   transition: all 0.3s ease;
+}
+
+.gantt-bar.ocioso {
+  background-color: #d3d3d3;
 }
 
 .gantt-bar:hover {
@@ -101,16 +122,9 @@ button:hover {
   font-weight: bold;
   margin-right: 10px;
   color: #333;
-  
 }
-
-p {
-  font-size: 18px;
-  margin: 10px 0;
-}
-
 .container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
 }
@@ -118,18 +132,22 @@ p {
 .card {
   background-color: white;
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .scale {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  position: relative;
+  height: 20px;
+  margin-bottom: 20px;
+  margin-left: 130px;
+  border-top: 1px solid #ddd;
 }
 
 .gantt-chart {
   position: relative;
+  overflow-x: auto;
+  padding-bottom: 40px;
 }
 
 .time-scale {
@@ -143,7 +161,25 @@ p {
 
 .scale-mark {
   position: absolute;
-  bottom: -20px;
-  width: 30px; /* Ajuste conforme necessário */
+  bottom: -10px;
+  width: 30px;
   text-align: center;
+  font-size: 12px;
+}
+
+button:disabled {
+  background-color: #ddd;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Cores para os status dos processos */
+.status-em-execucao {
+  background-color: #d4edda; /* Verde claro para "Em Execução" */
+  color: #155724; /* Texto verde escuro */
+}
+
+.status-finalizado {
+  background-color: #f8d7da; /* Vermelho claro para "Finalizado" */
+  color: #721c24; /* Texto vermelho escuro */
 }

@@ -8,6 +8,7 @@ export const useEscalonador = () => {
   const [mensagens, setMensagens] = useState([]);
 
   const TEMPO_PROCESSOS = 8;
+  const TEMPO_ESPERA_PROCESSO = 0;
 
   const limparGrafico = () => {
     setGanttChart([]);
@@ -68,9 +69,21 @@ export const useEscalonador = () => {
 
   const atualizarCampo = (id, campo, valor) => {
     setProcessos((prevProcessos) =>
-      prevProcessos.map((processo) =>
-        processo.id === id ? { ...processo, [campo]: valor } : processo
-      )
+      prevProcessos.map((processo) => {
+        if (processo.id === id) {
+          // Atualiza tempoRestante se tempoExecucao for alterado
+          if (campo === "tempoExecucao") {
+            const novoTempoExecucao = parseInt(valor, 10);
+            return {
+              ...processo,
+              [campo]: novoTempoExecucao,
+              tempoRestante: novoTempoExecucao, // Atualiza tempoRestante
+            };
+          }
+          return { ...processo, [campo]: valor };
+        }
+        return processo;
+      })
     );
   };
 
@@ -147,7 +160,7 @@ export const useEscalonador = () => {
       if (indiceAtual >= fila.length) {
         indiceAtual = 0;
       }
-    }, 1000);
+    }, TEMPO_ESPERA_PROCESSO);
   };
 
   const iniciarEscalonamentoSJF = () => {
@@ -205,7 +218,7 @@ export const useEscalonador = () => {
       setProcessos((prev) =>
         prev.map((p) => (p.id === processo.id ? processo : p))
       );
-    }, 1000);
+    }, TEMPO_ESPERA_PROCESSO);
   };
 
   const iniciarEscalonamentoFIFO = () => {
@@ -297,7 +310,7 @@ export const useEscalonador = () => {
                 prev.map((p) => (p.id === processo.id ? processo : p))
             );
         }
-    }, 1000);
+    }, TEMPO_ESPERA_PROCESSO);
 };
 
 

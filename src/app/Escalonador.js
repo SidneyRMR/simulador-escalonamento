@@ -50,6 +50,10 @@ const Escalonador = () => {
           <h2 className="text-center font-bold text-2xl text-blue-950 mt-2">
             Algoritmo de Escalonamento
           </h2>
+          <div  className="border border-gray-300 rounded-lg p-4 mt-2">
+          <h2 className="text-center font-bold text-2xl text-blue-950 mt-2">
+            Algoritmo de Escalonamento
+          </h2>
           <div className="flex justify-center gap-6 my-5 flex-wrap">
             <div className="escalonador-option">
               <h3 className="text-center font-normal text-base text-blue-950">
@@ -58,6 +62,7 @@ const Escalonador = () => {
               <button
                 onClick={iniciarEscalonamentoCircular}
                 disabled={emExecucao}
+                title="O escalonamento de processos Round Robin funciona atribuindo um tempo fixo (quantum) a cada processo. Quando o tempo de um processo expira, o sistema operacional o coloca no final da fila, dando oportunidade para o próximo processo na fila. Isso garante que todos os processos recebam tempo de CPU de forma justa."
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 Executar Round Robin
@@ -70,6 +75,7 @@ const Escalonador = () => {
               <button
                 onClick={iniciarEscalonamentoSJF}
                 disabled={emExecucao}
+                title="O escalonamento Shortest Job First (SJF) prioriza os processos com menor tempo de execução. O processo mais curto é executado primeiro, o que minimiza o tempo de espera médio. Contudo, pode causar adiamento de processos mais longos, especialmente se novos processos curtos continuarem chegando. Isso leva ao que chamamos de 'starvation', onde processos longos não recebem a chance de serem executados rapidamente."
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 Executar SJF
@@ -80,8 +86,9 @@ const Escalonador = () => {
                 First-In, First-Out
               </h3>
               <button
-              onClick={iniciarEscalonamentoFIFO}
+                onClick={iniciarEscalonamentoFIFO}
                 disabled={emExecucao}
+                title="O escalonamento First In, First Out (FIFO) executa os processos na ordem de chegada. O primeiro processo a entrar na fila é o primeiro a ser executado, e assim por diante. Isso é simples e justo, mas pode levar a tempos de espera elevados se um processo longo chegar primeiro."
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 Executar FIFO
@@ -93,11 +100,15 @@ const Escalonador = () => {
               </h3>
               <button
                 disabled
+                title="O escalonamento por Prioridade (Priority Scheduling) atribui a cada processo uma prioridade. Processos com maior prioridade são executados antes dos processos com menor prioridade. Se dois processos têm a mesma prioridade, pode-se usar outro método de escalonamento para decidir a ordem. Essa abordagem é útil para garantir que processos críticos sejam atendidos rapidamente, mas pode causar 'starvation' de processos com prioridade baixa."
                 className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
               >
                 Executar Priority
               </button>
             </div>
+          </div>
+
+
             {/* <div className="escalonador-option">
               <h3 className="text-center font-normal text-base text-gray-500">
                 Multilevel Queue

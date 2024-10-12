@@ -6,21 +6,37 @@ body {
   color: #333;
 }
 
-table {
+.container {
   max-width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 10px;
-  margin-inline: auto;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-td {
+.card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  min-width: 768px; /* Defina uma largura mínima maior para a tabela */
+  width: 100%;
+  border-collapse: collapse; /* Remove espaçamento entre as células */
+  margin-bottom: 2px;
+}
+
+th, td {
   padding: 10px;
+  text-align: left;
+  white-space: nowrap; /* Impede que o texto quebre para a próxima linha */
+  overflow: hidden; /* Esconde o texto que não cabe na célula */
+  text-overflow: ellipsis; 
 }
 
 th {
   background-color: #172554; /* Cor do cabeçalho */
   color: white; /* Texto do cabeçalho */
-  text-align: left;
   font-weight: bold;
 }
 
@@ -37,6 +53,7 @@ button {
 
 button:disabled {
   background-color: #ddd;
+  color: #aaa;
   cursor: not-allowed;
 }
 
@@ -46,6 +63,7 @@ button:hover {
 
 .gantt-row {
   display: flex;
+  flex-grow: 1;
   align-items: center;
   margin-bottom: 10px;
   height: 30px;
@@ -90,18 +108,13 @@ button:hover {
   margin-right: 10px;
   color: #333;
 }
-.container {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
+
+.scrollable-gantt {
+  overflow-x: auto; /* Permite rolagem horizontal */
+  overflow-y: hidden; /* Oculta rolagem vertical */
+  white-space: nowrap; /* Impede que os elementos quebrem para a próxima linha */
 }
 
-.card {
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
 .scale {
   position: relative;
@@ -113,8 +126,14 @@ button:hover {
 
 .gantt-chart {
   position: relative;
-  overflow-x: auto;
   padding-bottom: 0px;
+}
+
+/* Container para o gráfico de Gantt com rolagem horizontal */
+.scrollable-gantt {
+  overflow-x: auto; /* Permite rolagem horizontal */
+  overflow-y: hidden; /* Oculta rolagem vertical */
+  white-space: nowrap; /* Impede que os elementos do gráfico quebrem para a próxima linha */
 }
 
 .time-scale {
@@ -134,12 +153,11 @@ button:hover {
   font-size: 12px;
 }
 
-button:disabled {
+.button:disabled {
   background-color: #ddd;
   color: #aaa;
   cursor: not-allowed;
 }
-
 
 /* Tooltip styling */
 .tooltip {
@@ -167,4 +185,36 @@ button:disabled {
 .escalonador-option {
   position: relative;
   margin-bottom: 40px; /* Adiciona espaço extra abaixo para evitar sobreposição */
+}
+
+/* Permite rolagem horizontal */
+.scrollable-container,
+.scrollable-gantt {
+  overflow-x: auto; /* Permite rolagem horizontal */
+  overflow-y: hidden; /* Oculta rolagem vertical */
+  white-space: nowrap; /* Impede que as células quebrem para a próxima linha */
+}
+
+/* Responsividade para tabelas */
+@media (max-width: 768px) {
+  table {
+    min-width: 800px; /* Define a largura mínima em dispositivos menores */
+  }
+
+
+  th, td {
+    display: inline-block; /* Exibe as células em linha para permitir a rolagem horizontal */
+    width: auto; /* Ajusta a largura das células */
+    box-sizing: border-box; /* Inclui padding e borda no tamanho total */
+    white-space: nowrap; /* Impede que o texto quebre para a próxima linha */
+  }
+
+  tr {
+    display: table; /* Mantém o comportamento da tabela */
+    width: 100%;
+  }
+
+  th {
+    position: static; /* Remove a posição absoluta do cabeçalho */
+  }
 }

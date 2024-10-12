@@ -26,10 +26,18 @@ const Escalonador = () => {
   return (
     <div className="container">
       <div className="card">
+
         <h2 className="text-center font-bold text-3xl text-blue-950 mt-3 mb-4">
           Simulador de Escalonamento de Processos
         </h2>
-        <div className="flex justify-center gap-2 mb-4">
+
+        <div className="h-1 w-full bg-blue-950 rounded-full mb-4"></div>
+        <p className="text-center text-gray-600">
+
+          Uma ferramenta para simular o escalonamento de processos de forma interativa.
+        </p>
+
+        <div className="flex justify-center gap-2 mb-4 mt-4">
           <button onClick={criarProcessosAleatorios} disabled={emExecucao}>
             Criar Processos Aleatórios
           </button>
@@ -37,7 +45,7 @@ const Escalonador = () => {
             Adicionar Processo
           </button>
         </div>
-        <div className="mx-8">
+        <div className="">
           <ProcessTable
           estadoExecucao={estadoExecucao}
           processos={processos}

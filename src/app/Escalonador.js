@@ -120,8 +120,8 @@ const Escalonador = () => {
         <GanttChart ganttChart={ganttChart} processos={processos} tempoAtual={tempoAtual} />
 
         <div className="border border-gray-300 rounded-lg p-4 mt-2">
-          <h2 className="text-center font-bold text-2xl text-blue-950 mt-3">
-            Mensagens
+          <h2 className="text-center font-bold text-2xl text-blue-950 mt-3 mb-3">
+            Resultados
           </h2>
           <div
             className="mensagens"

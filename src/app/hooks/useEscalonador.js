@@ -33,35 +33,40 @@ export const useEscalonador = () => {
   const criarProcessosAleatorios = () => {
     limparGrafico();
     const numProcessos = Math.floor(Math.random() * 4) + 3; // Entre 3 e 6 processos
-    const novosProcessos = Array.from({ length: numProcessos }, (_, index) => ({
-      id: index + 1,
-      tempoExecucao: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1, // Entre 1 e 8
-      tempoRestante: 0,
-      tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
-      finalizado: false,
-      estadoExecucao: "-", // Estado inicial
-    }));
-
-    const processosComTempoRestante = novosProcessos.map((p) => ({
-      ...p,
-      tempoRestante: p.tempoExecucao,
-    }));
-
-    setProcessos(processosComTempoRestante);
+    const novosProcessos = Array.from({ length: numProcessos }, (_, index) => {
+      const tempoExecucao = Math.floor(Math.random() * TEMPO_PROCESSOS) + 1; // Entre 1 e 8
+      return {
+        id: index + 1,
+        tempoExecucao: tempoExecucao,
+        tempoRestante: tempoExecucao, // Define tempoRestante igual ao tempoExecucao
+        tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
+        finalizado: false,
+        estadoExecucao: "-", // Estado inicial
+      };
+    });
+  
+    setProcessos(novosProcessos);
   };
+  
 
   const adicionarProcesso = () => {
+    const tempoExecucao = Math.floor(Math.random() * TEMPO_PROCESSOS) + 1;
+  
+    // Obtém o maior ID existente nos processos, ou define como 0 se não houver processos
+    const maiorId = processos.length > 0 ? Math.max(...processos.map(p => p.id)) : 0;
+  
     const novoProcesso = {
-      id: processos.length + 1,
-      tempoExecucao: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
-      tempoRestante: 0,
+      id: maiorId + 1, // Garante que o novo ID seja único
+      tempoExecucao: tempoExecucao,
+      tempoRestante: tempoExecucao, // Define tempoRestante igual ao tempoExecucao
       tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
       finalizado: false,
       estadoExecucao: "-", // Estado inicial
     };
-
+  
     setProcessos((prev) => [...prev, novoProcesso]);
   };
+  
 
   const removerProcesso = (id) => {
     setProcessos((prev) => prev.filter((processo) => processo.id !== id));

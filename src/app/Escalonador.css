@@ -114,7 +114,7 @@ button:hover {
 .gantt-chart {
   position: relative;
   overflow-x: auto;
-  padding-bottom: 40px;
+  padding-bottom: 0px;
 }
 
 .time-scale {

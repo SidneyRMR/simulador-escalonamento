@@ -48,12 +48,12 @@ button:hover {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  height: 35px;
+  height: 30px;
 }
 
 .gantt-bar-container {
   position: relative;
-  height: 50px;
+  height: 30px;
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
   background-color: #f4f4f9;
@@ -65,7 +65,7 @@ button:hover {
 .gantt-bar {
   position: absolute;
   height: 30px;
-  top: 10px;
+  top: 0px;
   line-height: 30px;
   text-align: center;
   color: white;

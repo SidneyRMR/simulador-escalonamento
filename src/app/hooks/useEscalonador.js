@@ -5,7 +5,6 @@ export const useEscalonador = () => {
   const [quantum, setQuantum] = useState(2);
   const [tempoAtual, setTempoAtual] = useState(0);
   const [ganttChart, setGanttChart] = useState([]);
-  const [processosIniciais, setProcessosIniciais] = useState([]);
   const [mensagens, setMensagens] = useState([]);
 
   const TEMPO_PROCESSOS = 8;
@@ -15,13 +14,17 @@ export const useEscalonador = () => {
     setTempoAtual(0);
   };
 
+  const limparMensagens = () => {
+    setMensagens([]);
+  };
+
   const restaurarProcessosOriginais = () => {
     setProcessos(
       processos.map((p) => ({
         ...p,
         tempoRestante: p.tempoExecucao,
         finalizado: false,
-        estadoExecucao: "Aguardando", // Reinicializa o estadoExecucao
+        estadoExecucao: "-", // Reinicializa o estadoExecucao
       }))
     );
   };
@@ -35,7 +38,7 @@ export const useEscalonador = () => {
       tempoRestante: 0,
       tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
       finalizado: false,
-      estadoExecucao: "Aguardando", // Estado inicial
+      estadoExecucao: "-", // Estado inicial
     }));
 
     const processosComTempoRestante = novosProcessos.map((p) => ({
@@ -44,7 +47,6 @@ export const useEscalonador = () => {
     }));
 
     setProcessos(processosComTempoRestante);
-    setProcessosIniciais(processosComTempoRestante);
   };
 
   const adicionarProcesso = () => {
@@ -75,6 +77,7 @@ export const useEscalonador = () => {
   const iniciarEscalonamentoCircular = () => {
     if (processos.length === 0) return;
     limparGrafico();
+    limparMensagens();
 
     const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
@@ -150,6 +153,7 @@ export const useEscalonador = () => {
   const iniciarEscalonamentoSJF = () => {
     if (processos.length === 0) return;
     limparGrafico();
+    limparMensagens();
 
     const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
@@ -207,6 +211,7 @@ export const useEscalonador = () => {
   const iniciarEscalonamentoFIFO = () => {
     if (processos.length === 0) return;
     limparGrafico();
+    limparMensagens();
 
     const fila = processos.map((p) => ({ ...p })); // Cria uma cópia da fila
     let tempoCorrente = 0;

@@ -16,8 +16,10 @@ const Escalonador = () => {
     removerProcesso,
     iniciarEscalonamentoCircular,
     iniciarEscalonamentoSJF,
+    iniciarEscalonamentoFIFO,
     emExecucao,
     atualizarCampo,
+    estadoExecucao,
   } = useEscalonador();
 
   return (
@@ -35,6 +37,7 @@ const Escalonador = () => {
           </button>
         </div>
         <ProcessTable
+          estadoExecucao={estadoExecucao}
           processos={processos}
           removerProcesso={removerProcesso}
           emExecucao={emExecucao}
@@ -71,14 +74,15 @@ const Escalonador = () => {
               </button>
             </div>
             <div className="escalonador-option">
-              <h3 className="text-center font-normal text-base text-gray-500">
-                First-Come, First-Served (FCFS)
+              <h3 className="text-center font-normal text-base text-blue-950">
+                First-In, First-Out
               </h3>
               <button
-                disabled
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+              onClick={iniciarEscalonamentoFIFO}
+                disabled={emExecucao}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
               >
-                Executar FCFS
+                Executar FIFO
               </button>
             </div>
             <div className="escalonador-option">
@@ -92,7 +96,7 @@ const Escalonador = () => {
                 Executar Priority
               </button>
             </div>
-            <div className="escalonador-option">
+            {/* <div className="escalonador-option">
               <h3 className="text-center font-normal text-base text-gray-500">
                 Multilevel Queue
               </h3>
@@ -102,7 +106,7 @@ const Escalonador = () => {
               >
                 Executar Multilevel Queue
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 

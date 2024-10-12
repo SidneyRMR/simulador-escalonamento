@@ -13,39 +13,6 @@ table {
   margin-inline: auto;
 }
 
-/* Cores para os status dos processos */
-.status-em-execucao {
-  background-color: #28a745; /* Verde forte para "Em Execução" */
-  color: white; /* Texto branco */
-}
-
-.status-finalizado {
-  background-color: #dc3545; /* Vermelho forte para "Finalizado" */
-  color: white; /* Texto branco */
-}
-
-.status-aguardando {
-  background-color: #ffc107; /* Amarelo forte para "Aguardando" */
-  color: black; /* Texto preto para melhor legibilidade */
-}
-
-.status-pausando {
-  background-color: #ff8c00; /* Laranja forte para "Pausando" */
-  color: white; /* Texto branco */
-}
-
-.status-padrao {
-  background-color: #ffffff; /* Cor padrão (branco) */
-  color: #333; /* Texto padrão */
-}
-
-table {
-  max-width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 10px;
-  margin-inline: auto;
-}
-
 td {
   padding: 10px;
 }
@@ -173,13 +140,3 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Cores para os status dos processos */
-.status-em-execucao {
-  background-color: #d4edda; /* Verde claro para "Em Execução" */
-  color: #155724; /* Texto verde escuro */
-}
-
-.status-finalizado {
-  background-color: #f8d7da; /* Vermelho claro para "Finalizado" */
-  color: #721c24; /* Texto vermelho escuro */
-}

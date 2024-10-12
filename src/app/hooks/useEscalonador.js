@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState } from "react"; 
 
 export const useEscalonador = () => {
   const [processos, setProcessos] = useState([]);
   const [quantum, setQuantum] = useState(2);
   const [tempoAtual, setTempoAtual] = useState(0);
-  const [emExecucao, setEmExecucao] = useState(false);
   const [ganttChart, setGanttChart] = useState([]);
   const [processosIniciais, setProcessosIniciais] = useState([]);
   const [mensagens, setMensagens] = useState([]);
@@ -22,6 +21,7 @@ export const useEscalonador = () => {
         ...p,
         tempoRestante: p.tempoExecucao,
         finalizado: false,
+        estadoExecucao: "Aguardando", // Reinicializa o estadoExecucao
       }))
     );
   };
@@ -35,6 +35,7 @@ export const useEscalonador = () => {
       tempoRestante: 0,
       tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
       finalizado: false,
+      estadoExecucao: "Aguardando", // Estado inicial
     }));
 
     const processosComTempoRestante = novosProcessos.map((p) => ({
@@ -53,6 +54,7 @@ export const useEscalonador = () => {
       tempoRestante: 0,
       tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
       finalizado: false,
+      estadoExecucao: "Aguardando", // Estado inicial
     };
 
     setProcessos((prev) => [...prev, novoProcesso]);
@@ -69,34 +71,30 @@ export const useEscalonador = () => {
       )
     );
   };
-  
 
   const iniciarEscalonamentoCircular = () => {
     if (processos.length === 0) return;
     limparGrafico();
-    setEmExecucao(true);
-  
-    // Copiar os processos originais para a fila
+
     const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
     let indiceAtual = 0; // Índice para controlar a posição na fila
-  
+
     const intervalo = setInterval(() => {
-      // Filtrar processos que chegaram e ainda têm tempo restante
       const processosDisponiveis = fila.filter(
         (p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0
       );
-  
-      // Se não houver processos disponíveis, verificar se todos finalizaram
+
       if (processosDisponiveis.length === 0) {
         if (fila.every((p) => p.finalizado)) {
           clearInterval(intervalo);
-          setEmExecucao(false);
+          setProcessos((prev) =>
+            prev.map((p) => ({ ...p, estadoExecucao: "Finalizado" })) // Atualiza todos para "Finalizado"
+          );
           restaurarProcessosOriginais();
           return;
         }
-  
-        // Adicionar tempo ocioso no gráfico de Gantt
+
         setGanttChart((prev) => [
           ...prev,
           {
@@ -108,33 +106,25 @@ export const useEscalonador = () => {
         tempoCorrente++;
         return;
       }
-  
-      // Garantir que o índice atual esteja dentro do intervalo da fila
+
       if (indiceAtual >= fila.length) {
         indiceAtual = 0;
       }
-  
-      // Selecionar o próximo processo baseado no índice atual
+
       let processo = fila[indiceAtual];
-  
-      // Verificar se o processo está disponível para execução
+
       if (processo.tempoChegada <= tempoCorrente && processo.tempoRestante > 0) {
         const tempoExecutado = Math.min(processo.tempoRestante, quantum);
-  
-        // Atualizar tempo restante do processo e o tempo corrente do sistema
         processo.tempoRestante -= tempoExecutado;
         tempoCorrente += tempoExecutado;
-  
-        // Se o processo terminou, marcá-lo como finalizado
+
         if (processo.tempoRestante === 0) {
           processo.finalizado = true;
-        //   setMensagens((prev) => [
-        //     ...prev,
-        //     Processo ${processo.id} finalizado.,
-        //   ]);
+          processo.estadoExecucao = "Finalizado"; // Atualiza o estadoExecucao
+        } else {
+          processo.estadoExecucao = "Executando"; // Atualiza o estadoExecucao
         }
-  
-        // Atualizar gráfico de Gantt com o intervalo de execução do processo
+
         setGanttChart((prev) => [
           ...prev,
           {
@@ -143,27 +133,23 @@ export const useEscalonador = () => {
             tempoFim: tempoCorrente,
           },
         ]);
-  
-        // Atualizar o estado dos processos
+
         setTempoAtual(tempoCorrente);
         setProcessos((prev) =>
           prev.map((p) => (p.id === processo.id ? processo : p))
         );
       }
-  
-      // Avançar para o próximo processo na fila (circular)
+
       indiceAtual++;
       if (indiceAtual >= fila.length) {
-        indiceAtual = 0; // Reiniciar o índice para simular o comportamento circular
+        indiceAtual = 0;
       }
-  
-    }, 1000); // Intervalo de 1 segundo para simulação
+    }, 1000);
   };
 
   const iniciarEscalonamentoSJF = () => {
     if (processos.length === 0) return;
     limparGrafico();
-    setEmExecucao(true);
 
     const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
@@ -176,7 +162,9 @@ export const useEscalonador = () => {
       if (processosDisponiveis.length === 0) {
         if (fila.every((p) => p.finalizado)) {
           clearInterval(intervalo);
-          setEmExecucao(false);
+          setProcessos((prev) =>
+            prev.map((p) => ({ ...p, estadoExecucao: "Finalizado" })) // Atualiza todos para "Finalizado"
+          );
           restaurarProcessosOriginais();
           return;
         }
@@ -198,6 +186,7 @@ export const useEscalonador = () => {
 
       processo.tempoRestante = 0;
       processo.finalizado = true;
+      processo.estadoExecucao = "Finalizado"; // Atualiza o estadoExecucao
 
       setGanttChart((prev) => [
         ...prev,
@@ -212,9 +201,101 @@ export const useEscalonador = () => {
       setProcessos((prev) =>
         prev.map((p) => (p.id === processo.id ? processo : p))
       );
-      //setMensagens((prev) => [...prev, Processo ${processo.id} finalizado.]);
     }, 1000);
   };
+
+  const iniciarEscalonamentoFIFO = () => {
+    if (processos.length === 0) return;
+    limparGrafico();
+
+    const fila = processos.map((p) => ({ ...p })); // Cria uma cópia da fila
+    let tempoCorrente = 0;
+    let temposTotais = []; // Para armazenar o tempo total de cada processo
+    let temposEspera = []; // Para armazenar o tempo de espera de cada processo
+
+    const intervalo = setInterval(() => {
+        const processosDisponiveis = fila.filter(
+            (p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0
+        );
+
+        if (processosDisponiveis.length === 0) {
+            if (fila.every((p) => p.finalizado)) {
+                clearInterval(intervalo);
+
+                // Cálculo do Tempo Total e Tempo Médio de Retorno
+                const totalProcessos = fila.length;
+
+                const tempoTotal = temposTotais.reduce((acc, tempo) => acc + tempo, 0);
+                const tempoMedioRetorno = tempoTotal / totalProcessos;
+
+                // Cálculo do Tempo Médio de Espera
+                const tempoMedioEspera = temposEspera.reduce((acc, tempo) => acc + tempo, 0) / totalProcessos;
+
+                // Mensagens dos resultados
+                setMensagens((prevMensagens) => [
+                    ...prevMensagens,
+                    `Tempo Total: ${tempoTotal}`,
+                    `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno}`,
+                    `Tempo Médio de Espera: ${tempoMedioEspera}`,
+                ]);
+
+                setProcessos((prev) =>
+                    prev.map((p) => ({ ...p, estadoExecucao: "Finalizado" })) // Atualiza todos para "Finalizado"
+                );
+                restaurarProcessosOriginais();
+                return;
+            }
+
+            setGanttChart((prev) => [
+                ...prev,
+                {
+                    processoId: "Ocioso",
+                    tempoInicio: tempoCorrente - 1,
+                    tempoFim: tempoCorrente,
+                },
+            ]);
+            tempoCorrente++;
+            return;
+        }
+
+        // Pega o primeiro processo da fila (FIFO)
+        let processo = processosDisponiveis[0]; // Pega o primeiro da lista filtrada
+
+        if (processo) {
+            // Executa o processo
+            const tempoInicio = tempoCorrente; // Marca o tempo de início do processo
+            const tempoExecutado = processo.tempoRestante; // Executa até terminar
+            tempoCorrente += tempoExecutado; // Atualiza o tempo corrente
+            processo.tempoRestante = 0; // Define o tempo restante como zero
+            processo.finalizado = true; // Define como finalizado
+            processo.estadoExecucao = "Finalizado"; // Atualiza o estadoExecucao
+
+            // Cálculo do Tempo Total para o processo atual
+            const tempoTotalProcesso = tempoCorrente - processo.tempoChegada; // Tempo total do processo
+            temposTotais.push(tempoTotalProcesso); // Adiciona ao array de tempos totais
+
+            // Cálculo do Tempo de Espera
+            const tempoEsperaProcesso = tempoInicio - processo.tempoChegada; // Tempo que o processo esperou
+            temposEspera.push(tempoEsperaProcesso); // Adiciona ao array de tempos de espera
+
+            setGanttChart((prev) => [
+                ...prev,
+                {
+                    processoId: processo.id,
+                    tempoInicio: tempoInicio,
+                    tempoFim: tempoCorrente,
+                },
+            ]);
+
+            setTempoAtual(tempoCorrente);
+            setProcessos((prev) =>
+                prev.map((p) => (p.id === processo.id ? processo : p))
+            );
+        }
+    }, 1000);
+};
+
+
 
   return {
     processos,
@@ -226,7 +307,7 @@ export const useEscalonador = () => {
     removerProcesso,
     iniciarEscalonamentoCircular,
     iniciarEscalonamentoSJF,
+    iniciarEscalonamentoFIFO,
     atualizarCampo,
-    emExecucao,
   };
 };

@@ -2,6 +2,8 @@
 
 Este projeto é uma aplicação web desenvolvida em React que simula algoritmos de escalonamento de processos em sistemas operacionais: **Round Robin**, **Shortest Job First (SJF)**, **First-In, First-Out (FIFO)** e **Priority Scheduling**. A aplicação permite a criação e manipulação de processos, visualização do gráfico de Gantt e análise dos tempos de execução.
 
+<img src="assets/imgs/simulador-vercel.PNG">
+
 ### Round Robin
 O escalonamento de processos Round Robin funciona atribuindo um tempo fixo (quantum) a cada processo. Quando o tempo de um processo expira, o sistema operacional o coloca no final da fila, dando oportunidade para o próximo processo na fila. Isso garante que todos os processos recebam tempo de CPU de forma justa.
 

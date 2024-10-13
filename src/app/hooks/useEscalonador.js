@@ -8,7 +8,7 @@ export const useEscalonador = () => {
   const [mensagens, setMensagens] = useState([]);
 
   const TEMPO_PROCESSOS = 8;
-  const TEMPO_ESPERA_PROCESSO = 100;
+  const TEMPO_ESPERA_PROCESSO = 0;
 
   const limparProcessos = () => {
     setProcessos([]); // Limpa a lista de processos
@@ -46,7 +46,7 @@ export const useEscalonador = () => {
         id: index + 1,
         tempoExecucao: tempoExecucao,
         tempoRestante: tempoExecucao, // Define tempoRestante igual ao tempoExecucao
-        tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
+        tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS),
         finalizado: false,
         estadoExecucao: "-", // Estado inicial
       };
@@ -54,7 +54,6 @@ export const useEscalonador = () => {
   
     setProcessos(novosProcessos);
   };
-  
 
   const adicionarProcesso = () => {
     const tempoExecucao = Math.floor(Math.random() * TEMPO_PROCESSOS) + 1;
@@ -73,7 +72,6 @@ export const useEscalonador = () => {
   
     setProcessos((prev) => [...prev, novoProcesso]);
   };
-  
 
   const removerProcesso = (id) => {
     setProcessos((prev) => prev.filter((processo) => processo.id !== id));
@@ -118,7 +116,7 @@ export const useEscalonador = () => {
       if (processosDisponiveis.length === 0) {
         if (fila.every((p) => p.finalizado)) {
           clearInterval(intervalo);
-          
+  
           // Calcula o tempo total, tempo médio de retorno e tempo médio de espera
           tempoTotal = tempoCorrente; // Tempo total de execução
           fila.forEach((p, index) => {
@@ -129,12 +127,21 @@ export const useEscalonador = () => {
           const tempoMedioRetorno = tempoRetorno.reduce((a, b) => a + b, 0) / processos.length;
           const tempoMedioEspera = tempoEspera.reduce((a, b) => a + b, 0) / processos.length;
   
-          setMensagens((prevMensagens) => [
-            ...prevMensagens,
-            `Tempo Total: ${tempoTotal}`,
-            `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno.toFixed(2)}`,
-            `Tempo Médio de Espera: ${tempoMedioEspera.toFixed(2)}`,
-        ]);
+          // Cria um objeto para ser recebido pelo escalonador.js
+          const tabelaResultados = {
+            tempoTotal,
+            tempoMedioRetorno: tempoMedioRetorno.toFixed(2),
+            tempoMedioEspera: tempoMedioEspera.toFixed(2),
+            detalhes: fila.map((p, index) => ({
+              processo: p.id,
+              TAT: tempoRetorno[index],
+              WT: tempoEspera[index],
+              tempoExecucao: p.tempoExecucao,
+            })),
+          };
+  
+          // Aqui você pode passar tabelaResultados para um estado que será usado no componente de exibição
+          setMensagens(tabelaResultados);
   
           setProcessos((prev) =>
             prev.map((p) => ({ ...p, estadoExecucao: "Finalizado" })) // Atualiza todos para "Finalizado"
@@ -197,108 +204,21 @@ export const useEscalonador = () => {
       }
     }, TEMPO_ESPERA_PROCESSO);
   };
+  
   const iniciarEscalonamentoSJF = () => {
     if (processos.length === 0) return;
     limparGrafico();
     limparMensagens();
-  
+
     const fila = processos.map((p) => ({ ...p }));
     let tempoCorrente = 0;
     let temposTotais = []; // Para armazenar o tempo total de cada processo
     let temposEspera = []; // Para armazenar o tempo de espera de cada processo
-  
-    const intervalo = setInterval(() => {
-      const processosDisponiveis = fila
-        .filter((p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0)
-        .sort((a, b) => a.tempoRestante - b.tempoRestante);
-  
-      if (processosDisponiveis.length === 0) {
-        if (fila.every((p) => p.finalizado)) {
-          clearInterval(intervalo);
-  
-          // Cálculo do Tempo Total e Tempo Médio de Retorno
-          const totalProcessos = fila.length;
-  
-          const tempoTotal = temposTotais.reduce((acc, tempo) => acc + tempo, 0);
-          const tempoMedioRetorno = tempoTotal / totalProcessos;
-  
-          // Cálculo do Tempo Médio de Espera
-          const tempoMedioEspera = temposEspera.reduce((acc, tempo) => acc + tempo, 0) / totalProcessos;
-  
-          // Mensagens dos resultados
-          setMensagens((prevMensagens) => [
-            ...prevMensagens,
-            `Tempo Total: ${tempoTotal}`,
-            `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno.toFixed(2)}`,
-            `Tempo Médio de Espera: ${tempoMedioEspera.toFixed(2)}`,
-          ]);
-  
-          setProcessos((prev) =>
-            prev.map((p) => ({ ...p, estadoExecucao: "Finalizado" })) // Atualiza todos para "Finalizado"
-          );
-          restaurarProcessosOriginais();
-          return;
-        }
-  
-        setGanttChart((prev) => [
-          ...prev,
-          {
-            processoId: "Ocioso",
-            tempoInicio: tempoCorrente - 1,
-            tempoFim: tempoCorrente,
-          },
-        ]);
-        tempoCorrente++;
-        return;
-      }
-  
-      let processo = processosDisponiveis.shift(); // Pega o primeiro processo disponível
-      const tempoInicio = tempoCorrente; // Marca o tempo de início do processo
-  
-      // Executa o processo
-      tempoCorrente += processo.tempoRestante; // Atualiza o tempo corrente
-      processo.tempoRestante = 0; // Define o tempo restante como zero
-      processo.finalizado = true; // Define como finalizado
-      processo.estadoExecucao = "Finalizado"; // Atualiza o estadoExecucao
-  
-      // Cálculo do Tempo Total para o processo atual
-      const tempoTotalProcesso = tempoCorrente - processo.tempoChegada; // Tempo total do processo
-      temposTotais.push(tempoTotalProcesso); // Adiciona ao array de tempos totais
-  
-      // Cálculo do Tempo de Espera
-      const tempoEsperaProcesso = tempoInicio - processo.tempoChegada; // Tempo que o processo esperou
-      temposEspera.push(tempoEsperaProcesso); // Adiciona ao array de tempos de espera
-  
-      setGanttChart((prev) => [
-        ...prev,
-        {
-          processoId: processo.id,
-          tempoInicio: tempoInicio,
-          tempoFim: tempoCorrente,
-        },
-      ]);
-  
-      setTempoAtual(tempoCorrente);
-      setProcessos((prev) =>
-        prev.map((p) => (p.id === processo.id ? processo : p))
-      );
-    }, TEMPO_ESPERA_PROCESSO);
-  };
-  
-  const iniciarEscalonamentoFIFO = () => {
-    if (processos.length === 0) return;
-    limparGrafico();
-    limparMensagens();
-
-    const fila = processos.map((p) => ({ ...p })); // Cria uma cópia da fila
-    let tempoCorrente = 0;
-    let temposTotais = []; // Para armazenar o tempo total de cada processo
-    let temposEspera = []; // Para armazenar o tempo de espera de cada processo
 
     const intervalo = setInterval(() => {
-        const processosDisponiveis = fila.filter(
-            (p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0
-        );
+        const processosDisponiveis = fila
+            .filter((p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0)
+            .sort((a, b) => a.tempoRestante - b.tempoRestante);
 
         if (processosDisponiveis.length === 0) {
             if (fila.every((p) => p.finalizado)) {
@@ -306,20 +226,27 @@ export const useEscalonador = () => {
 
                 // Cálculo do Tempo Total e Tempo Médio de Retorno
                 const totalProcessos = fila.length;
-
                 const tempoTotal = temposTotais.reduce((acc, tempo) => acc + tempo, 0);
                 const tempoMedioRetorno = tempoTotal / totalProcessos;
 
                 // Cálculo do Tempo Médio de Espera
                 const tempoMedioEspera = temposEspera.reduce((acc, tempo) => acc + tempo, 0) / totalProcessos;
 
-                // Mensagens dos resultados
-                setMensagens((prevMensagens) => [
-                    ...prevMensagens,
-                    `Tempo Total: ${tempoTotal}`,
-                    `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno.toFixed(2)}`,
-                    `Tempo Médio de Espera: ${tempoMedioEspera.toFixed(2)}`,
-                ]);
+                // Cria um objeto para ser recebido pelo escalonador.js
+                const tabelaResultados = {
+                    tempoTotal,
+                    tempoMedioRetorno: tempoMedioRetorno.toFixed(2),
+                    tempoMedioEspera: tempoMedioEspera.toFixed(2),
+                    detalhes: fila.map((p, index) => ({
+                        processo: p.id,
+                        TAT: temposTotais[index],
+                        WT: temposEspera[index],
+                        tempoExecucao: p.tempoExecucao,
+                    })),
+                };
+
+                // Atualiza as mensagens
+                setMensagens(tabelaResultados);
 
                 setProcessos((prev) =>
                     prev.map((p) => ({ ...p, estadoExecucao: "Finalizado" })) // Atualiza todos para "Finalizado"
@@ -340,44 +267,142 @@ export const useEscalonador = () => {
             return;
         }
 
-        // Pega o primeiro processo da fila (FIFO)
-        let processo = processosDisponiveis[0]; // Pega o primeiro da lista filtrada
+        let processo = processosDisponiveis.shift(); // Pega o primeiro processo disponível
+        const tempoInicio = tempoCorrente; // Marca o tempo de início do processo
 
-        if (processo) {
-            // Executa o processo
-            const tempoInicio = tempoCorrente; // Marca o tempo de início do processo
-            const tempoExecutado = processo.tempoRestante; // Executa até terminar
-            tempoCorrente += tempoExecutado; // Atualiza o tempo corrente
-            processo.tempoRestante = 0; // Define o tempo restante como zero
-            processo.finalizado = true; // Define como finalizado
-            processo.estadoExecucao = "Finalizado"; // Atualiza o estadoExecucao
+        // Executa o processo
+        tempoCorrente += processo.tempoRestante; // Atualiza o tempo corrente
+        processo.tempoRestante = 0; // Define o tempo restante como zero
+        processo.finalizado = true; // Define como finalizado
+        processo.estadoExecucao = "Finalizado"; // Atualiza o estadoExecucao
 
-            // Cálculo do Tempo Total para o processo atual
-            const tempoTotalProcesso = tempoCorrente - processo.tempoChegada; // Tempo total do processo
-            temposTotais.push(tempoTotalProcesso); // Adiciona ao array de tempos totais
+        // Cálculo do Tempo Total para o processo atual
+        const tempoTotalProcesso = tempoCorrente - processo.tempoChegada; // Tempo total do processo
+        temposTotais.push(tempoTotalProcesso); // Adiciona ao array de tempos totais
 
-            // Cálculo do Tempo de Espera
-            const tempoEsperaProcesso = tempoInicio - processo.tempoChegada; // Tempo que o processo esperou
-            temposEspera.push(tempoEsperaProcesso); // Adiciona ao array de tempos de espera
+        // Cálculo do Tempo de Espera
+        const tempoEsperaProcesso = tempoInicio - processo.tempoChegada; // Tempo que o processo esperou
+        temposEspera.push(tempoEsperaProcesso); // Adiciona ao array de tempos de espera
 
-            setGanttChart((prev) => [
-                ...prev,
-                {
-                    processoId: processo.id,
-                    tempoInicio: tempoInicio,
-                    tempoFim: tempoCorrente,
-                },
-            ]);
+        setGanttChart((prev) => [
+            ...prev,
+            {
+                processoId: processo.id,
+                tempoInicio: tempoInicio,
+                tempoFim: tempoCorrente,
+            },
+        ]);
 
-            setTempoAtual(tempoCorrente);
-            setProcessos((prev) =>
-                prev.map((p) => (p.id === processo.id ? processo : p))
-            );
-        }
+        setTempoAtual(tempoCorrente);
+        setProcessos((prev) =>
+            prev.map((p) => (p.id === processo.id ? processo : p))
+        );
     }, TEMPO_ESPERA_PROCESSO);
 };
 
+const iniciarEscalonamentoFIFO = () => {
+  if (processos.length === 0) return;
+  limparGrafico();
+  limparMensagens();
 
+  const fila = processos.map((p) => ({ ...p })); // Cria uma cópia da fila
+  let tempoCorrente = 0;
+  let temposTotais = []; // Para armazenar o tempo total de cada processo
+  let temposEspera = []; // Para armazenar o tempo de espera de cada processo
+  let tempoOcioso = 0; // Para armazenar o tempo total ocioso
+
+  const intervalo = setInterval(() => {
+      const processosDisponiveis = fila.filter(
+          (p) => p.tempoChegada <= tempoCorrente && p.tempoRestante > 0
+      );
+
+      if (processosDisponiveis.length === 0) {
+          if (fila.every((p) => p.finalizado)) {
+              clearInterval(intervalo);
+
+              // Cálculo do Tempo Total e Tempo Médio de Retorno
+              const totalProcessos = fila.length;
+
+              // Tempo total deve incluir o tempo ocioso
+              const tempoTotal = temposTotais.reduce((acc, tempo) => acc + tempo, 0) + tempoOcioso;
+              const tempoMedioRetorno = tempoTotal / totalProcessos;
+
+              // Cálculo do Tempo Médio de Espera
+              const tempoMedioEspera = temposEspera.reduce((acc, tempo) => acc + tempo, 0) / totalProcessos;
+
+              // Cria um objeto para ser recebido pelo escalonador.js
+              const tabelaResultados = {
+                  tempoTotal,
+                  tempoMedioRetorno: tempoMedioRetorno.toFixed(2),
+                  tempoMedioEspera: tempoMedioEspera.toFixed(2),
+                  detalhes: fila.map((p, index) => ({
+                      processo: p.id,
+                      TAT: temposTotais[index],
+                      WT: temposEspera[index],
+                      tempoExecucao: p.tempoExecucao,
+                  })),
+              };
+
+              // Atualiza as mensagens
+              setMensagens(tabelaResultados);
+
+              setProcessos((prev) =>
+                  prev.map((p) => ({ ...p, estadoExecucao: "Finalizado" })) // Atualiza todos para "Finalizado"
+              );
+              restaurarProcessosOriginais();
+              return;
+          }
+
+          // Aumenta o tempo ocioso se não houver processos disponíveis
+          tempoOcioso++;
+          setGanttChart((prev) => [
+              ...prev,
+              {
+                  processoId: "Ocioso",
+                  tempoInicio: tempoCorrente - 1,
+                  tempoFim: tempoCorrente,
+              },
+          ]);
+          tempoCorrente++;
+          return;
+      }
+
+      // Pega o primeiro processo da fila (FIFO)
+      let processo = processosDisponiveis[0]; // Pega o primeiro da lista filtrada
+
+      if (processo) {
+          // Executa o processo
+          const tempoInicio = tempoCorrente; // Marca o tempo de início do processo
+          const tempoExecutado = processo.tempoRestante; // Executa até terminar
+          tempoCorrente += tempoExecutado; // Atualiza o tempo corrente
+          processo.tempoRestante = 0; // Define o tempo restante como zero
+          processo.finalizado = true; // Define como finalizado
+          processo.estadoExecucao = "Finalizado"; // Atualiza o estadoExecucao
+
+          // Cálculo do Tempo Total para o processo atual
+          const tempoTotalProcesso = tempoCorrente - processo.tempoChegada; // Tempo total do processo
+          temposTotais.push(tempoTotalProcesso); // Adiciona ao array de tempos totais
+
+          // Cálculo do Tempo de Espera
+          const tempoEsperaProcesso = tempoInicio - processo.tempoChegada; // Tempo que o processo esperou
+          temposEspera.push(tempoEsperaProcesso); // Adiciona ao array de tempos de espera
+
+          setGanttChart((prev) => [
+              ...prev,
+              {
+                  processoId: processo.id,
+                  tempoInicio: tempoInicio,
+                  tempoFim: tempoCorrente,
+              },
+          ]);
+
+          setTempoAtual(tempoCorrente);
+          setProcessos((prev) =>
+              prev.map((p) => (p.id === processo.id ? processo : p))
+          );
+      }
+  }, TEMPO_ESPERA_PROCESSO);
+};
 
   return {
     processos,

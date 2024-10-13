@@ -3,8 +3,10 @@ import React from "react";
 import "./Escalonador.css";
 import { useEscalonador } from "./hooks/useEscalonador";
 import ProcessTable from "./components/ProcessTable";
+import TabelaResultados from "./components/TabelaResultados"
 import GanttChart from "./components/GanttChart";
 import { FaPlay } from "react-icons/fa";
+import ExplicacaoResultados from "./components/ExplicacaoResultados";
 
 const Escalonador = () => {
   const {
@@ -176,36 +178,15 @@ const Escalonador = () => {
     </div>
   </div>
 </div>
-
-
-            <GanttChart ganttChart={ganttChart} processos={processos} tempoAtual={tempoAtual} />
-
-            <div className="border border-gray-300 rounded-lg p-4 mt-2">
+  <GanttChart ganttChart={ganttChart} processos={processos} tempoAtual={tempoAtual} />
+  <div className="border border-gray-300 rounded-lg p-4 mt-2">
   <h2 className="text-center font-bold text-2xl text-blue-950 mt-3 mb-3">
     Resultados
   </h2>
-
-  {/* Explicação sobre os resultados */}
-  <div className="explicacao-resultados bg-blue-50 p-4 rounded-lg mb-4">
-    <h3 className="text-lg font-semibold text-blue-950">
-      Sobre os Resultados
-    </h3>
-    <p className="text-gray-600">
-      Após a execução dos algoritmos de escalonamento, os resultados fornecem uma visão clara sobre o desempenho do sistema. 
-      Eles incluem informações como o tempo médio de espera, o tempo de turnaround e a ordem de execução dos processos. 
-      Estes dados são fundamentais para analisar a eficiência de cada algoritmo e entender como os processos se comportaram 
-      durante a simulação.
-    </p>
-  </div>
-
-  {mensagens.map((mensagem, index) => (
-    <p key={index} style={{ minHeight: "20px" }}>
-      {mensagem}
-    </p>
-  ))}
+  <TabelaResultados resultados={mensagens} />
+  <ExplicacaoResultados/>
 </div>
 
-            
           </>
         )}
       </div>

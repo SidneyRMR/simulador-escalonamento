@@ -26,8 +26,8 @@ const ProcessTable = ({ processos, removerProcesso, emExecucao, atualizarCampo }
           </tr>
         </thead>
         <tbody>
-          {processos.map((processo) => (
-            <tr key={processo.id}>
+          {processos.map((processo, index) => (
+            <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
               <td className="border border-gray-300 px-4 py-2">{processo.id}</td>
               <td className="border border-gray-300 px-4 py-2">
                 <input

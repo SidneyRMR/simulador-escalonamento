@@ -194,27 +194,3 @@ button:hover {
   overflow-y: hidden; /* Oculta rolagem vertical */
   white-space: nowrap; /* Impede que as células quebrem para a próxima linha */
 }
-
-/* Responsividade para tabelas */
-@media (max-width: 768px) {
-  table {
-    min-width: 800px; /* Define a largura mínima em dispositivos menores */
-  }
-
-
-  th, td {
-    display: inline-block; /* Exibe as células em linha para permitir a rolagem horizontal */
-    width: auto; /* Ajusta a largura das células */
-    box-sizing: border-box; /* Inclui padding e borda no tamanho total */
-    white-space: nowrap; /* Impede que o texto quebre para a próxima linha */
-  }
-
-  tr {
-    display: table; /* Mantém o comportamento da tabela */
-    width: 100%;
-  }
-
-  th {
-    position: static; /* Remove a posição absoluta do cabeçalho */
-  }
-}

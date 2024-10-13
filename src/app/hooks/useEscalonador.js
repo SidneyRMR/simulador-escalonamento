@@ -8,7 +8,14 @@ export const useEscalonador = () => {
   const [mensagens, setMensagens] = useState([]);
 
   const TEMPO_PROCESSOS = 8;
-  const TEMPO_ESPERA_PROCESSO = 0;
+  const TEMPO_ESPERA_PROCESSO = 100;
+
+  const limparProcessos = () => {
+    setProcessos([]); // Limpa a lista de processos
+    setGanttChart([]); // Limpa o gráfico de Gantt
+    setMensagens([]); // Limpa as mensagens
+    setTempoAtual(0); // Reseta o tempo atual
+  };
 
   const limparGrafico = () => {
     setGanttChart([]);
@@ -125,8 +132,8 @@ export const useEscalonador = () => {
           setMensagens((prevMensagens) => [
             ...prevMensagens,
             `Tempo Total: ${tempoTotal}`,
-            `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno}`,
-            `Tempo Médio de Espera: ${tempoMedioEspera}`,
+            `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno.toFixed(2)}`,
+            `Tempo Médio de Espera: ${tempoMedioEspera.toFixed(2)}`,
         ]);
   
           setProcessos((prev) =>
@@ -222,8 +229,8 @@ export const useEscalonador = () => {
           setMensagens((prevMensagens) => [
             ...prevMensagens,
             `Tempo Total: ${tempoTotal}`,
-            `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno}`,
-            `Tempo Médio de Espera: ${tempoMedioEspera}`,
+            `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno.toFixed(2)}`,
+            `Tempo Médio de Espera: ${tempoMedioEspera.toFixed(2)}`,
           ]);
   
           setProcessos((prev) =>
@@ -310,8 +317,8 @@ export const useEscalonador = () => {
                 setMensagens((prevMensagens) => [
                     ...prevMensagens,
                     `Tempo Total: ${tempoTotal}`,
-                    `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno}`,
-                    `Tempo Médio de Espera: ${tempoMedioEspera}`,
+                    `Tempo Médio de Retorno (TMR): ${tempoMedioRetorno.toFixed(2)}`,
+                    `Tempo Médio de Espera: ${tempoMedioEspera.toFixed(2)}`,
                 ]);
 
                 setProcessos((prev) =>
@@ -384,5 +391,6 @@ export const useEscalonador = () => {
     iniciarEscalonamentoSJF,
     iniciarEscalonamentoFIFO,
     atualizarCampo,
+    limparProcessos,
   };
 };

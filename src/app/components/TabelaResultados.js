@@ -3,7 +3,7 @@ const TabelaResultados = ({ resultados }) => {
     if (!resultados || resultados.length === 0) return null;
 
     return (
-        <div className="p-4">
+        <div className="p-4 overflow-x-auto">
           <p className="font-bold">Tempo Total do processador: {resultados.tempoTotal}</p>
           <p className="font-bold">Tempo Médio de Retorno (TMR): {resultados.tempoMedioRetorno}</p>
           <p className="font-bold">Tempo Médio de Espera (TME): {resultados.tempoMedioEspera}</p>

@@ -104,9 +104,10 @@ const Escalonador = () => {
       Sobre os Algoritmos de Escalonamento
     </h3>
     <p className="text-gray-600">
-      Existem vários algoritmos de escalonamento que controlam como os processos são selecionados para execução pelo processador. Cada algoritmo segue um critério específico para decidir qual processo executar em determinado momento, equilibrando eficiência e tempo de espera. Aqui estão alguns dos algoritmos que podem ser simulados nesta aplicação: 
-      <p className=""></p><strong>Aponte o mouse nos botões, para ver mais informações.</strong>
-    </p>
+  Existem vários algoritmos de escalonamento que controlam como os processos são selecionados para execução pelo processador. Cada algoritmo segue um critério específico para decidir qual processo executar em determinado momento, equilibrando eficiência e tempo de espera. Aqui estão alguns dos algoritmos que podem ser simulados nesta aplicação: 
+  <span className="font-bold">Aponte o mouse nos botões, para ver mais informações.</span>
+</p>
+
   </div>
 
   <div className="flex justify-center gap-6 my-5 flex-wrap">

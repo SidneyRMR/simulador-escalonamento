@@ -88,7 +88,7 @@ const Escalonador = () => {
             Executar SJF
           </button>
           <span className="tooltip group-hover:scale-100">
-            O escalonamento Shortest Job First (SJF) prioriza os processos com menor tempo de execução. O processo mais curto é executado primeiro, o que minimiza o tempo de espera médio. Contudo, pode causar adiamento de processos mais longos, especialmente se novos processos curtos continuarem chegando. Isso leva ao que chamamos de 'starvation', onde processos longos não recebem a chance de serem executados rapidamente.
+            O escalonamento Shortest Job First (SJF) prioriza os processos com menor tempo de execução. O processo mais curto é executado primeiro, o que minimiza o tempo de espera médio. Contudo, pode causar adiamento de processos mais longos, especialmente se novos processos curtos continuarem chegando. Isso leva ao que chamamos de starvation, onde processos longos não recebem a chance de serem executados rapidamente.
           </span>
         </div>
         <div className="escalonador-option relative group">
@@ -119,7 +119,7 @@ const Escalonador = () => {
             Executar Priority
           </button>
           <span className="tooltip group-hover:scale-100">
-            O escalonamento por Prioridade (Priority Scheduling) atribui a cada processo uma prioridade. Processos com maior prioridade são executados antes dos processos com menor prioridade. Se dois processos têm a mesma prioridade, pode-se usar outro método de escalonamento para decidir a ordem. Essa abordagem é útil para garantir que processos críticos sejam atendidos rapidamente, mas pode causar 'starvation' de processos com prioridade baixa.
+            O escalonamento por Prioridade (Priority Scheduling) atribui a cada processo uma prioridade. Processos com maior prioridade são executados antes dos processos com menor prioridade. Se dois processos têm a mesma prioridade, pode-se usar outro método de escalonamento para decidir a ordem. Essa abordagem é útil para garantir que processos críticos sejam atendidos rapidamente, mas pode causar starvation de processos com prioridade baixa.
           </span>
         </div>
       </div>

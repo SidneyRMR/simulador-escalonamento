@@ -20,10 +20,8 @@ body {
 }
 
 table {
-  min-width: 768px; /* Defina uma largura mínima maior para a tabela */
-  width: 100%;
+  width: 100%; /* A tabela ocupa 100% da largura do contêiner */
   border-collapse: collapse; /* Remove espaçamento entre as células */
-  margin-bottom: 2px;
 }
 
 th, td {
@@ -36,8 +34,10 @@ th, td {
 
 th {
   background-color: #172554; /* Cor do cabeçalho */
-  color: white; /* Texto do cabeçalho */
-  font-weight: bold;
+  color: white; /* Cor do texto do cabeçalho */
+  position: sticky; /* Mantém os cabeçalhos fixos no topo */
+  top: 0; /* Posição do cabeçalho fixo no topo da tabela */
+  z-index: 1; /* Garante que os cabeçalhos fiquem acima do conteúdo da tabela */
 }
 
 button {

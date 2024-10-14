@@ -183,8 +183,7 @@ button:hover {
 }
 
 .escalonador-option {
-  position: relative;
-  margin-bottom: 40px; /* Adiciona espaço extra abaixo para evitar sobreposição */
+  position: relative; /* Adiciona espaço extra abaixo para evitar sobreposição */
 }
 
 /* Permite rolagem horizontal */

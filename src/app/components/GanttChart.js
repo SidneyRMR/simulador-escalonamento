@@ -15,13 +15,13 @@ const GanttChart = ({ ganttChart, processos, tempoAtual }) => {
 
   return (
     <div className="border border-gray-300 rounded-lg p-4 mt-2">
-      <h2 className="text-center font-bold text-2xl text-blue-950 mt-4 mb-4">
+      {/* <h2 className="text-center font-bold text-2xl text-blue-950 mt-4 mb-4">
         Gráfico de Gantt (Tempo x Processo)
-      </h2>
+      </h2> */}
         {/* Explicação sobre os algoritmos de escalonamento */}
   <div className="explicacao-algoritmo bg-blue-50 p-4 rounded-lg mb-4">
-    <h3 className="text-lg font-semibold text-blue-950">
-      Sobre o Gráfico de Gantt
+    <h3 className="text-lg font-semibold text-blue-950 text-center">
+      Gráfico de Gantt (Tempo x Processo)
     </h3>
     <p className="text-gray-600">
     O gráfico de Gantt ilustra a execução dos processos ao longo do tempo, permitindo que você visualize 

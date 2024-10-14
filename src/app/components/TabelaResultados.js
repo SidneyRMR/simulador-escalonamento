@@ -5,6 +5,11 @@ const TabelaResultados = ({ resultados }) => {
     <div className=" pb-4 overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-300 mt-3">
         <thead>
+        <tr>
+            <th colSpan="4" className="text-center text-xl py-4">
+              Tabela de Resultados
+            </th>
+          </tr>
           <tr className="bg-gray-200 text-gray-700">
             <th className="border px-4 py-2">Processo</th>
             <th className="border px-4 py-2">Tempo de Retorno (TAT)</th>

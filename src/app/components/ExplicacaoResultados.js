@@ -14,7 +14,7 @@ const ExplicacaoResultados = () => {
         durante a simulação.
       </p>
 
-      <h4 className="text-md font-semibold text-blue-950 mt-4">1. Tempo Total do Processador</h4>
+      <h4 className="text-md font-semibold text-blue-950 mt-4">1. Tempo Total do Processador (TTP)</h4>
       <p className="text-gray-600">
         O Tempo Total do Processador é a soma do tempo de execução de todos os processos, incluindo o tempo em que o sistema ficou ocioso.
         <strong> Fórmula:</strong>
@@ -43,7 +43,7 @@ const ExplicacaoResultados = () => {
         </code>
       </p>
 
-      <h4 className="text-md font-semibold text-blue-950 mt-4">4. Turnaround Time (TAT)</h4>
+      <h4 className="text-md font-semibold text-blue-950 mt-4">4. Tempo de Retorno (TAT)</h4>
       <p className="text-gray-600">
         O Turnaround Time é o tempo total que um processo leva desde a sua chegada até a sua conclusão.
         Ele é um indicador importante da eficiência do sistema.
@@ -53,7 +53,7 @@ const ExplicacaoResultados = () => {
         </code>
       </p>
 
-      <h4 className="text-md font-semibold text-blue-950 mt-4">5. Waiting Time (WT)</h4>
+      <h4 className="text-md font-semibold text-blue-950 mt-4">5. Tempo de Espera (WT)</h4>
       <p className="text-gray-600">
         O Waiting Time é o tempo que um processo permanece na fila de prontos antes de ser executado.
         É calculado como a diferença entre o tempo de início de execução e o tempo de chegada do processo.

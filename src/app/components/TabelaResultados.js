@@ -2,7 +2,7 @@ const TabelaResultados = ({ resultados }) => {
   if (!resultados || resultados.length === 0) return null;
 
   return (
-    <div className=" pb-4 overflow-x-auto">
+    <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-300 mt-3">
         <thead>
         <tr>

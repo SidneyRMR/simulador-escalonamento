@@ -320,6 +320,7 @@ export const useEscalonador = () => {
       );
   }, TEMPO_ESPERA_PROCESSO);
   }
+
 const iniciarEscalonamentoFIFO = () => {
   if (processos.length === 0) return;
   limparGrafico();
@@ -344,7 +345,8 @@ const iniciarEscalonamentoFIFO = () => {
               const totalProcessos = fila.length;
 
               // Tempo total deve incluir o tempo ocioso
-              const tempoTotal = temposTotais.reduce((acc, tempo) => acc + tempo, 0) 
+              const tempoTotal = fila.reduce((acc, p) => acc + p.tempoExecucao, 0);
+              //const tempoTotal = temposTotais.reduce((acc, tempo) => acc + tempo, 0) 
               const tempoMedioRetorno = tempoTotal / totalProcessos;
 
               // Cálculo do Tempo Médio de Espera

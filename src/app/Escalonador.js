@@ -81,9 +81,7 @@ const Escalonador = () => {
               iniciarEscalonamentoFIFO={iniciarEscalonamentoFIFO}
               emExecucao={emExecucao}
             />
-            <div className="border border-gray-300 rounded-lg p-4 mt-2">
               <TabelaResultados resultados={mensagens} />
-            </div>
           </>
         );
       case "explicacao":

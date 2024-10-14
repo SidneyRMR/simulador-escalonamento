@@ -1,13 +1,7 @@
 import React, { useEffect } from 'react';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa'; // Importando os ícones corretos
 
-const BotaoOperacoes = ({ criarProcessosAleatorios, adicionarProcesso, limparProcessos, emExecucao, processos, tempoChegadaRef }) => {
-  
-  useEffect(() => {
-    if (processos.length > 0 && tempoChegadaRef.current) {
-      tempoChegadaRef.current.focus();
-    }
-  }, [processos]);
+const BotaoOperacoes = ({ criarProcessosAleatorios, adicionarProcesso, limparProcessos, emExecucao, processos }) => {
   
   return (
     <div className="flex justify-center gap-2 mb-4 mt-4 overflow-x-auto px-2">

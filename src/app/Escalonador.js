@@ -43,7 +43,6 @@ const Escalonador = () => {
               limparProcessos={limparProcessos}
               emExecucao={emExecucao}
               processos={processos}
-              tempoChegadaRef={tempoChegadaRef}
             />
             <div className="explicacao-tabela bg-blue-50 p-4 rounded-lg mb-4">
               <h3 className="text-lg font-semibold text-blue-950">Sobre a Tabela de Processos</h3>

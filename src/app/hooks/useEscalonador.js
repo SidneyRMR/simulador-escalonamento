@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"; 
+import { useEffect, useState } from "react"; 
 
 export const useEscalonador = (tempoChegadaRef) => {
   const [processos, setProcessos] = useState([]);
@@ -70,11 +70,21 @@ export const useEscalonador = (tempoChegadaRef) => {
       estadoExecucao: "-", // Estado inicial
     };
   
-    setProcessos((prev) => [...prev, novoProcesso]);
-    if (tempoChegadaRef.current) {
-      tempoChegadaRef.current.focus();
-    }
+    // Atualiza a lista de processos e executa uma ação logo após a renderização
+    setProcessos((prev) => {
+      const novosProcessos = [...prev, novoProcesso];
+  
+      // Aguarda a próxima renderização para focar o campo
+      setTimeout(() => {
+        if (tempoChegadaRef.current) {
+          tempoChegadaRef.current.focus();
+        }
+      }, 0);
+  
+      return novosProcessos;
+    });
   };
+  
 
   const removerProcesso = (id) => {
     setProcessos((prev) => prev.filter((processo) => processo.id !== id));

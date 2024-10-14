@@ -5,7 +5,7 @@ const AbasNavegacao = ({ abaAtiva, setAbaAtiva, mensagemInformativa }) => {
   return (
     <>
       {/* Abas de navegação */}
-      <div className="flex justify-center border-b border-gray-300 mb-4 px-2 min-w-[870px]">
+      <div className="flex flex-wrap justify-center border-b border-gray-300 mb-4 px-2">
         <button
           className={`flex items-center py-2 px-4 min-w-[120px] transition-colors duration-300 ease-in-out ${
             abaAtiva === "processos" ? "bg-blue-500 text-white" : "bg-white text-blue-500 hover:bg-gray-100"

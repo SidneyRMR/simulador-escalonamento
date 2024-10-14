@@ -1,36 +1,43 @@
-import React from 'react';
-import { FaQuestionCircle } from 'react-icons/fa';
+import React, { useEffect } from 'react';
+import { FaPlus, FaTrashAlt } from 'react-icons/fa'; // Importando os ícones corretos
 
-const BotaoOperacoes = ({ criarProcessosAleatorios, adicionarProcesso, limparProcessos, emExecucao, processos }) => {
+const BotaoOperacoes = ({ criarProcessosAleatorios, adicionarProcesso, limparProcessos, emExecucao, processos, tempoChegadaRef }) => {
+  
+  useEffect(() => {
+    if (processos.length > 0 && tempoChegadaRef.current) {
+      tempoChegadaRef.current.focus();
+    }
+  }, [processos]);
+  
   return (
-    <>
-
-    <div className="flex justify-center gap-2 mb-4 mt-4">
-        
+    <div className="flex justify-center gap-2 mb-4 mt-4 overflow-x-auto px-2">
       <div className="relative">
         <button
           onClick={criarProcessosAleatorios}
           disabled={emExecucao}
-          className="btn"
+          className={`bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 transition-colors duration-300 h-full flex items-center justify-center ${emExecucao ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
+          <div className="relative">
+            <FaPlus className="mr-2" />
+            <FaPlus className="ml-2" />
+          </div>
           Criar Processos Aleatórios
         </button>
-        <span className="tooltip group-hover:scale-100">
-          Cria um conjunto de processos aleatórios para simulação. Use este botão antes de iniciar o escalonamento.
-        </span>
       </div>
 
       <div className="relative">
-        <button
-          onClick={adicionarProcesso}
-          disabled={emExecucao}
-          className="btn"
-        >
-          Adicionar Processo
-        </button>
-        <span className="tooltip group-hover:scale-100">
-          Adiciona um novo processo manualmente ao simulador. Você pode definir o tempo de execução e a prioridade.
-        </span>
+      <button
+  onClick={() => {
+    adicionarProcesso();
+    
+  }}
+  disabled={emExecucao}
+  className={`bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600 transition-colors duration-300 h-full flex items-center justify-center ${emExecucao ? 'opacity-50 cursor-not-allowed' : ''}`}
+>
+  <FaPlus className="mr-2" />
+  Adicionar Processo
+</button>
+
       </div>
 
       {processos.length > 0 && (
@@ -38,17 +45,14 @@ const BotaoOperacoes = ({ criarProcessosAleatorios, adicionarProcesso, limparPro
           <button
             onClick={limparProcessos}
             disabled={emExecucao}
-            className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition-colors"
+            className={`bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition-colors duration-300 h-full flex items-center justify-center ${emExecucao ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
+            <FaTrashAlt className="mr-2" />
             Limpar
           </button>
-          <span className="tooltip group-hover:scale-100">
-            Remove todos os processos da lista. Use este botão se você quiser começar uma nova simulação.
-          </span>
         </div>
       )}
     </div>
-    </>
   );
 };
 

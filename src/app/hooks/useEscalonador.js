@@ -1,6 +1,6 @@
-import { useState } from "react"; 
+import { useRef, useState } from "react"; 
 
-export const useEscalonador = () => {
+export const useEscalonador = (tempoChegadaRef) => {
   const [processos, setProcessos] = useState([]);
   const [quantum, setQuantum] = useState(2);
   const [tempoAtual, setTempoAtual] = useState(0);
@@ -65,12 +65,15 @@ export const useEscalonador = () => {
       id: maiorId + 1, // Garante que o novo ID seja único
       tempoExecucao: tempoExecucao,
       tempoRestante: tempoExecucao, // Define tempoRestante igual ao tempoExecucao
-      tempoChegada: Math.floor(Math.random() * TEMPO_PROCESSOS) + 1,
+      tempoChegada: 0,
       finalizado: false,
       estadoExecucao: "-", // Estado inicial
     };
   
     setProcessos((prev) => [...prev, novoProcesso]);
+    if (tempoChegadaRef.current) {
+      tempoChegadaRef.current.focus();
+    }
   };
 
   const removerProcesso = (id) => {
@@ -345,7 +348,7 @@ const iniciarEscalonamentoFIFO = () => {
               const totalProcessos = fila.length;
 
               // Tempo total deve incluir o tempo ocioso
-              const tempoTotal = fila.reduce((acc, p) => acc + p.tempoExecucao, 0);
+              const tempoTotal = fila.reduce((acc, p) => acc + p.tempoExecucao, 0) + tempoOcioso;
               //const tempoTotal = temposTotais.reduce((acc, tempo) => acc + tempo, 0) 
               const tempoMedioRetorno = tempoTotal / totalProcessos;
 

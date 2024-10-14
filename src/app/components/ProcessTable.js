@@ -1,15 +1,9 @@
 import React from "react";
-import { AiOutlineDelete } from "react-icons/ai";
+import { FaTrashAlt } from "react-icons/fa";
 
-const statusClasses = {
-  aguardando: "text-yellow-600 text-black", // Amarelo para "Aguardando"
-  emExecucao: "text-green-600 text-white", // Verde para "Em Execução"
-  finalizado: "text-red-600 text-white", // Vermelho para "Finalizado"
-};
-
-const ProcessTable = ({ processos, removerProcesso, emExecucao, atualizarCampo }) => {
+const ProcessTable = ({ processos, removerProcesso, emExecucao, atualizarCampo, tempoChegadaRef }) => {
   return (
-    <div className="overflow-x-auto"> {/* Contêiner para rolagem horizontal */}
+    <div className="overflow-x-auto">
       <table className="min-w-full">
         <thead>
           <tr>
@@ -36,10 +30,11 @@ const ProcessTable = ({ processos, removerProcesso, emExecucao, atualizarCampo }
                   max="8"
                   value={processo.tempoChegada}
                   disabled={emExecucao}
+                  ref={tempoChegadaRef} // Usando a referência aqui
                   onChange={(e) =>
                     atualizarCampo(processo.id, "tempoChegada", e.target.value)
                   }
-                  className="border border-gray-300 rounded px-2" // Ajuste para largura total
+                  className="border border-gray-300 rounded px-2"
                 />
               </td>
               <td className="border border-gray-300 px-4 py-2">
@@ -52,15 +47,15 @@ const ProcessTable = ({ processos, removerProcesso, emExecucao, atualizarCampo }
                   onChange={(e) =>
                     atualizarCampo(processo.id, "tempoExecucao", e.target.value)
                   }
-                  className="border border-gray-300 rounded px-2" // Ajuste para largura total
+                  className="border border-gray-300 rounded px-2"
                 />
               </td>
-              <td className={`border border-gray-300 px-4 py-2 font-bold ${statusClasses[processo.estadoExecucao.toLowerCase()]}`}>
+              <td className={`border border-gray-300 px-4 py-2`}>
                 {processo.estadoExecucao}
               </td>
               <td className="border border-gray-300 px-4 py-2 flex justify-center">
                 <button onClick={() => removerProcesso(processo.id)}>
-                  <AiOutlineDelete />
+                  <FaTrashAlt />
                 </button>
               </td>
             </tr>
